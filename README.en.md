@@ -16,8 +16,8 @@ and the recognized text is translated. No need for `hook`, basically suitable fo
 4. The original text display. 
 5. The translation display. 
 
+### Future:
 
-### future:
 1. More language support.
 2. Auto translate(translate according to the set time interval ).
 3. Rectangular area to cover the original text by translation text.

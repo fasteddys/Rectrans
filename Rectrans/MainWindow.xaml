@@ -7,85 +7,69 @@
         mc:Ignorable="d"
         Title="Rectrans" Height="450" Width="800"
         WindowStartupLocation="CenterScreen">
-    <Canvas>
-        <Button Content="设置翻译区域"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Margin="10,10,0,0" Width="80" Height="25"
-                Click="Rect_Button_Click"/>
-        <Button Content="窗口置顶"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Margin="100,10,0,0" Width="80" Height="25"
-                Click="Topmost_Button_Click"/>
-        <Button Content="点击翻译"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Margin="190,10,0,0" Width="80" Height="25"
-                x:Name="Trans_Button" Click="Trans_Button_Click"/>
-        <ComboBox HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  VerticalContentAlignment="Center"
-                  Margin="280,10,0,0" Width="80" Height="25"
-                  RenderTransformOrigin="0.425,-0.906"
-                  x:Name="AutoTranslateTime">
-            <ComboBoxItem IsSelected="True">自动翻译</ComboBoxItem>
-        </ComboBox>
 
-        <ComboBox HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  VerticalContentAlignment="Center"
-                  Margin="10,45,0,0"
-                  Width="100"
-                  Height="25"
-                  RenderTransformOrigin="0.425,-0.906"
-                  x:Name="FromLanguageComboBox">
-            <ComboBoxItem IsSelected="True">英语</ComboBoxItem>
-        </ComboBox>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="语言">
+                <MenuItem Header="源语言">
+                    <MenuItem Header="英语"/>
+                </MenuItem>
+                <MenuItem Header="目标语言">
+                    <MenuItem Header="简体中文"/>
+                </MenuItem>
+            </MenuItem>
 
-        <Label HorizontalAlignment="Left"
-               VerticalAlignment="Top"
-               HorizontalContentAlignment="Center"
-               Content="To"
-               FontSize="15"
-               FontFamily="Cascadia Code"
-               Margin="120,45,0,0" Width="30" Height="25"/>
+            <MenuItem Header="自动翻译" x:Name="AutoTrans_MI" Click="AutoTrans_MI_Click">
+                <MenuItem Header="停止"/>
+                <MenuItem Header="2s"/>
+                <MenuItem Header="4s"/>
+                <MenuItem Header="6s"/>
+                <MenuItem Header="8s"/>
+                <MenuItem Header="10s"/>
+            </MenuItem>
 
-        <ComboBox HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  VerticalContentAlignment="Center"
-                  Margin="160,45,0,0"
-                  Width="100"
-                  Height="25"
-                  RenderTransformOrigin="0.425,-0.906"
-                  x:Name="ToLanguageComboBox">
-            <ComboBoxItem IsSelected="True">简体中文</ComboBoxItem>
-        </ComboBox>
+            <MenuItem Header="重置区域" x:Name="RectReset_Btn" Click="RectReset_Click"  IsEnabled="False"/>
 
-        <Label Content="原文："
-               HorizontalAlignment="Left"
-               VerticalAlignment="Top"
-               Margin="50,80,0,0" Width="80" Height="25"/>
-        <TextBlock HorizontalAlignment="Left"
+            <MenuItem Header="窗口置顶" x:Name="TopMost_MI" Click="TopMost_Click"/>
+        </Menu>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <Button Content="设置区域" x:Name="Rect_Btn" Click="Rect_Click"/>
+                <Button Content="开始翻译" x:Name="Trans_Btn" Click="Trans_Click" IsEnabled="False"/>
+            </ToolBar>
+        </ToolBarTray>
+
+        <StatusBar DockPanel.Dock="Bottom">
+            <TextBlock Margin="10,0,0,0" x:Name="StatusBar" Text="字数统计(字节): 0"/>
+        </StatusBar>
+
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Content="原文：" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="25"/>
+            <TextBlock HorizontalAlignment="Stretch"
                    VerticalAlignment="Top"
-                   Margin="50,110,0,0"
+                   Margin="20,20"
+                   Padding="10"
+                   TextWrapping="Wrap"
+                   Text="Waiting..."
+                   FontSize="16"
+                   Height="140"
+                   x:Name="OriginalTextBlock"/>
+
+            <Label Grid.Row="1" Content="译文：" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="25"/>
+            <TextBlock Grid.Row="1" HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Margin="20,20"
+                   Padding="10"
                    TextWrapping="Wrap"
                    Text="Waiting..."
                    FontSize="16"
                    Height="140" Width="700"
-                   x:Name="OriginalTextBlock"/>
-
-        <Label Content="翻译："
-               HorizontalAlignment="Left"
-               VerticalAlignment="Top"
-               Margin="50,250,0,0" Width="80" Height="25"/>
-        <TextBlock HorizontalAlignment="Left"
-                   VerticalAlignment="Top"
-                   Margin="50,280,0,0"
-                   TextWrapping="Wrap" Text="等待载入..."
-                   FontSize="16"
-                   Height="140" Width="700"
                    x:Name="TranslatedTextBlock"/>
-
-    </Canvas>
+        </Grid>
+    </DockPanel>
 </Window>

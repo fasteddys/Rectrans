@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Timers;
 
 namespace Rectrans
 {
@@ -12,80 +15,137 @@ namespace Rectrans
     {
         private double x, y, width, height;
 
-        private bool AutoTranslate = false;
+        private int count = 0;
+
+        private static Timer? timer = null;
 
         private RectangleWindow? rectWindow = null;
+
+        private void BtnsEnable()
+        {
+            Trans_Btn.IsEnabled = true;
+            RectReset_Btn.IsEnabled = true;
+        }
+
+        private void BtnsDisable()
+        {
+            Trans_Btn.IsEnabled = false;
+            RectReset_Btn.IsEnabled = false;
+        }
 
         public MainWindow()
         {
             InitializeComponent();
             MouseLeftButtonDown += delegate { DragMove(); };
         }
-        private void Topmost_Button_Click(object sender, RoutedEventArgs e) => Topmost = !Topmost;
-
-        private void UpdatePosition()
+        private void TopMost_Click(object sender, RoutedEventArgs e)
         {
-            if (rectWindow is null)
-            {
-                rectWindow = new RectangleWindow();
-            }
-
-            x = rectWindow.Left;
-            y = rectWindow.Top;
-            width = rectWindow.Width;
-            height = rectWindow.Height;
+            Topmost = !Topmost;
+            TopMost_MI.IsChecked = !TopMost_MI.IsChecked;
         }
 
-        private void Rect_Button_Click(object sender, RoutedEventArgs e)
+        private void AutoTrans_MI_Click(object sender, RoutedEventArgs e)
         {
-            if (rectWindow is null)
+            if (e.Source is MenuItem mi)
             {
-                rectWindow = new RectangleWindow();
-            }
+                if (timer is null)
+                {
+                    timer = new();
+                    MessageBox.Show("自动翻译可能会加速翻译API限额的消耗，请谨慎使用。");
+                }
 
-            rectWindow.LayoutUpdated += delegate { UpdatePosition(); };
+                switch (mi.Header)
+                {
+                    case "2s":
+                        timer.Interval = 2000;
+                        AutoTrans_MI.Header = "自动翻译(2s)";
+                        AutoTrans_MI.IsChecked = true;
+                        break;
+                    case "4s":
+                        timer.Interval = 4000;
+                        AutoTrans_MI.Header = "自动翻译(4s)";
+                        AutoTrans_MI.IsChecked = true;
+                        break;
+                    case "6s":
+                        timer.Interval = 6000;
+                        AutoTrans_MI.Header = "自动翻译(6s)";
+                        break;
+                    case "8s":
+                        timer.Interval = 8000;
+                        AutoTrans_MI.Header = "自动翻译(8s)";
+                        AutoTrans_MI.IsChecked = true;
+                        break;
+                    case "10s":
+                        timer.Interval = 10000;
+                        AutoTrans_MI.Header = "自动翻译(10s)";
+                        AutoTrans_MI.IsChecked = true;
+                        break;
+                    case "停止":
+                        timer.Dispose();
+                        timer = null;
+                        AutoTrans_MI.Header = "自动翻译";
+                        AutoTrans_MI.IsChecked = false;
+                        break;
+                    default:
+                        Debugger.Break();
+                        break;
+                }
+            }
+        }
+
+        private void Rect_Click(object sender, RoutedEventArgs e)
+        {
+            if (rectWindow is not null) return;
+
+            rectWindow = new RectangleWindow();
 
             rectWindow.Show();
+            BtnsEnable();
+
+            rectWindow.LayoutUpdated += delegate { RectChanged(); };
+            rectWindow.Closed += delegate
+            {
+                rectWindow = null;
+                BtnsDisable();
+            };
         }
 
-        private async void Trans_Button_Click(object sender, RoutedEventArgs e)
+        private void RectReset_Click(object sender, RoutedEventArgs e)
         {
-            if (rectWindow is null)
-            {
-                MessageBox.Show("请先设置翻译区域");
-                return;
-            }
-
-            Trans_Button.IsEnabled = false;
-
-            if (AutoTranslate)
-            {
-                await Task.Run(() => AutoWoker());
-            }
-            else
-            {
-                await Task.Run(async () => await WokerAsync());
-            }
-
-            Trans_Button.IsEnabled = true;
+            Debug.Assert(rectWindow is not null);
+            rectWindow.Topmost = true;
+            rectWindow.WindowState = WindowState.Normal;
         }
 
-        private void AutoWoker()
+        private async void Trans_Click(object sender, RoutedEventArgs e)
         {
-            System.Timers.Timer timer = new();
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(async (object? sender, System.Timers.ElapsedEventArgs e) =>
+            BtnsDisable();
+
+            await Task.Run(async () => await InterpretAsync());
+
+            if (timer is not null)
             {
-                await WokerAsync();
+                await Task.Run(() => AutoInterpret());
+            }
+
+            BtnsEnable();
+        }
+
+        private void AutoInterpret()
+        {
+            Debug.Assert(timer is not null);
+            timer.Elapsed += new ElapsedEventHandler(async (object? sender, ElapsedEventArgs e) =>
+            {
+                await InterpretAsync();
 
             });
 
-            timer.Interval = 1000;
             timer.Start();
         }
 
-        private async Task WokerAsync()
+        private async Task InterpretAsync()
         {
-            var bitmap = CaptureScreen(x, y, width, height);
+            var bitmap = ScreenShot(x, y, width, height);
             var original = toI(OCR.English.FromImage(bitmap));
 
             var translated = await Interpreter.Interpret.WithGoogleAsync(original, Interpreter.Language.Chinese);
@@ -94,10 +154,11 @@ namespace Rectrans
             {
                 OriginalTextBlock.Text = original;
                 TranslatedTextBlock.Text = translated;
+                StatusBar.Text = $"字数统计(字节): {count += original.Length}";
             });
         }
 
-        private static Bitmap CaptureScreen(double x, double y, double width, double height)
+        private static Bitmap ScreenShot(double x, double y, double width, double height)
         {
             var ix = Convert.ToInt32(x);
             var iy = Convert.ToInt32(y);
@@ -118,6 +179,16 @@ namespace Rectrans
             }
 
             return bitmap;
+        }
+
+        private void RectChanged()
+        {
+            if (rectWindow is null) return;
+
+            x = rectWindow.Left;
+            y = rectWindow.Top;
+            width = rectWindow.Width;
+            height = rectWindow.Height;
         }
 
         private static string toI(string text) => text.Replace("|", "I");

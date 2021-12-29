@@ -7,14 +7,8 @@
         mc:Ignorable="d"
         Title="RectangleWindow" Height="150" Width="450"
         WindowStartupLocation="CenterScreen"
-        AllowsTransparency="True"
-        WindowStyle="None"
-        Opacity="0.15"
-        BorderBrush="Blue"
-        BorderThickness="3"
-        Topmost="True"
-        WindowChrome.WindowChrome="{DynamicResource WindowChrome}" 
-        ResizeMode="CanResize">
+        Style="{StaticResource WindowStyle.Rect}"
+        WindowChrome.WindowChrome="{DynamicResource WindowChrome}">
     <Window.Resources>
         <WindowChrome x:Key="WindowChrome">
             <WindowChrome.ResizeBorderThickness>
