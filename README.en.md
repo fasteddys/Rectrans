@@ -23,14 +23,17 @@ and the recognized text is translated. No need for `hook`, basically suitable fo
 3. Rectangular area to cover the original text by translation text.
 4. Font Family setting.
 
-### Mind Mapping
+### MainWindow
 
-![](mind.png)
-
+![](ui.png)
 
 ### Preview
 
 ![](preview1.png)
+
+### Mind Mapping
+
+![](mind.png)
 
 
 ### README.md

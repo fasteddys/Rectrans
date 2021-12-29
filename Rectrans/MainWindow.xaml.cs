@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Timers;
+using System.IO;
 
 namespace Rectrans
 {
@@ -113,6 +114,7 @@ namespace Rectrans
         private void RectReset_Click(object sender, RoutedEventArgs e)
         {
             Debug.Assert(rectWindow is not null);
+#pragma warning disable CS8602 // 解引用可能出现空引用。
             rectWindow.Topmost = true;
             rectWindow.WindowState = WindowState.Normal;
         }
@@ -145,10 +147,16 @@ namespace Rectrans
 
         private async Task InterpretAsync()
         {
-            var bitmap = ScreenShot(x, y, width, height);
-            var original = toI(OCR.English.FromImage(bitmap));
+            var bytes = ScreenShot(x, y, width, height);
 
+            var original = toI(OCR.English.FromMemory(bytes));
+
+#if NET5_0_OR_GREATER
             var translated = await Interpreter.Interpret.WithGoogleAsync(original, Interpreter.Language.Chinese);
+#else
+#pragma warning disable CS8625 // 无法将 null 字面量转换为非 null 的引用类型。
+            var translated = await Interpreter.Interpret.WithGoogleAsync(original, Interpreter.Language.Chinese, null);
+#endif
 
             _ = Dispatcher.BeginInvoke(() =>
             {
@@ -158,7 +166,7 @@ namespace Rectrans
             });
         }
 
-        private static Bitmap ScreenShot(double x, double y, double width, double height)
+        private static byte[] ScreenShot(double x, double y, double width, double height)
         {
             var ix = Convert.ToInt32(x);
             var iy = Convert.ToInt32(y);
@@ -166,19 +174,18 @@ namespace Rectrans
             var ih = Convert.ToInt32(height);
 
             var bitmap = new Bitmap(iw, ih);
-            using (var graphics = Graphics.FromImage(bitmap))
-            {
-                graphics.CopyFromScreen(ix, iy, 0, 0, new System.Drawing.Size(iw, ih));
+            using var graphics = Graphics.FromImage(bitmap);
+            using var stream = new MemoryStream();
+            graphics.CopyFromScreen(ix, iy, 0, 0, new System.Drawing.Size(iw, ih));
+            bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+            return stream.ToArray();
 
-                //var dialog = new Microsoft.Win32.SaveFileDialog();
-                //dialog.Filter = "Png Files|*.png";
-                //if (dialog.ShowDialog() == true)
-                //{
-                //    bitmap.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Png);
-                //}
-            }
-
-            return bitmap;
+            //var dialog = new Microsoft.Win32.SaveFileDialog();
+            //dialog.Filter = "Png Files|*.png";
+            //if (dialog.ShowDialog() == true)
+            //{
+            //    bitmap.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Png);
+            //}
         }
 
         private void RectChanged()

@@ -1,22 +1,37 @@
-﻿namespace Rectrans.OCR
+﻿using Tesseract;
+
+namespace Rectrans.OCR
 {
     public static class Japanese
     {
-        private static readonly IronOcr.IronTesseract Tesseract;
-
-        static Japanese()
+        public static string FromFile(string path)
         {
-            Tesseract = new();
-            Tesseract.Language = IronOcr.OcrLanguage.Japanese;
+            try
+            {
+                using var engine = new TesseractEngine(@".\tessdata", "eng", EngineMode.Default);
+                using var pix = Pix.LoadFromFile(path);
+                using var page = engine.Process(pix);
+                return page.GetText();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
-        public static string FromPath(string path)
-            => Tesseract.Read(path).Text;
-        public static string FromImage(System.Drawing.Image image)
-            => Tesseract.Read(image).Text;
-        public static async Task<string> FromPathAsync(string path)
-            => (await Tesseract.ReadAsync(path)).Text;
-        public static async Task<string> FromImageAsync(System.Drawing.Image image)
-            => (await Tesseract.ReadAsync(image)).Text;
+        public static string FromMemory(byte[] bytes)
+        {
+            try
+            {
+                using var engine = new TesseractEngine(@".\tessdata", "eng", EngineMode.Default);
+                using var pix = Pix.LoadFromMemory(bytes);
+                using var page = engine.Process(pix);
+                return page.GetText();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
     }
 }
