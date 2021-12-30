@@ -2,9 +2,9 @@
 
 namespace Rectrans.OCR
 {
-    public static class Japanese
+    public static class English
     {
-        public static string FromFile(string path)
+        public static string Parse(string path)
         {
             try
             {
@@ -19,7 +19,7 @@ namespace Rectrans.OCR
             }
         }
 
-        public static string FromMemory(byte[] bytes)
+        public static string Parse(byte[] bytes)
         {
             try
             {

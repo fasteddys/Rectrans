@@ -1,34 +1,35 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Rectrans.Infrastructure;
 
 namespace Rectrans.Interpreter
 {
     public static class Interpret
     {
 #if NET5_0_OR_GREATER
-        public static string WithGoogle(string text, string toLanguage, string? fromLanguage = null)
+        public static string WithGoogle(string text, Language toLanguage, Language? fromLanguage = null)
 #else
-        public static string WithGoogle(string text, string toLanguage, string fromLanguage)
+        public static string WithGoogle(string text, Language toLanguage, Language fromLanguage)
 #endif
             => WithGoogleAsync(text, toLanguage, fromLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
 
 
 #if NET5_0_OR_GREATER
-        public static async Task<string> WithGoogleAsync(string text, string toLanguage, string? fromLanguage = null)
+        public static async Task<string> WithGoogleAsync(string text, Language toLanguage, Language? fromLanguage = null)
         {
 #else
-        public static async Task<string> WithGoogleAsync(string text, string toLanguage, string fromLanguage)
+        public static async Task<string> WithGoogleAsync(string text, Language toLanguage, Nullable<Language> fromLanguage)
         {   
 #endif
             var client = new HttpClient();
-            var response = await client.GetAsync($"https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl={fromLanguage ?? "auto"}&tl={toLanguage}&q={text}");
+            var response = await client.GetAsync($"https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl={fromLanguage.Key() ?? "auto"}&tl={toLanguage.Key()}&q={text}");
 
             if (response.IsSuccessStatusCode)
             {
                 return HandleResponse1(await response.Content.ReadAsStringAsync());
             }
 
-            response = await client.GetAsync($"https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl={fromLanguage ?? "auto"}&tl={toLanguage}&q={text}");
+            response = await client.GetAsync($"https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl={fromLanguage.Key() ?? "auto"}&tl={toLanguage.Key()}&q={text}");
 
             if (response.IsSuccessStatusCode)
             {

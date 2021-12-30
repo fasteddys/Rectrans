@@ -11,11 +11,13 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="语言">
-                <MenuItem Header="源语言">
-                    <MenuItem Header="英语"/>
+                <MenuItem Header="源语言(英语)" x:Name="SourceLan_MI">
+                    <MenuItem Header="英语" Click="EN_Click" IsChecked="True"/>
+                    <MenuItem Header="日语" Click="JA_Click"/>
+                    <MenuItem Header="韩语" Click="KO_Click"/>
                 </MenuItem>
-                <MenuItem Header="目标语言">
-                    <MenuItem Header="简体中文"/>
+                <MenuItem Header="目标语言(简体中文)" x:Name="TargetLan_MI">
+                    <MenuItem Header="简体中文" IsChecked="True"/>
                 </MenuItem>
             </MenuItem>
 
@@ -30,7 +32,7 @@
 
             <MenuItem Header="重置区域" x:Name="RectReset_Btn" Click="RectReset_Click"  IsEnabled="False"/>
 
-            <MenuItem Header="窗口置顶" x:Name="TopMost_MI" Click="TopMost_Click"/>
+            <MenuItem Header="窗口置顶" Click="TopMost_Click" IsCheckable="True"/>
         </Menu>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>

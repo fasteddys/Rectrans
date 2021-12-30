@@ -2,13 +2,13 @@
 
 namespace Rectrans.OCR
 {
-    public static class English
+    internal static class Japanese
     {
-        public static string FromFile(string path)
+        public static string Parse(string path)
         {
             try
             {
-                using var engine = new TesseractEngine(@".\tessdata", "eng", EngineMode.Default);
+                using var engine = new TesseractEngine(@".\tessdata", "jpn", EngineMode.Default);
                 using var pix = Pix.LoadFromFile(path);
                 using var page = engine.Process(pix);
                 return page.GetText();
@@ -19,11 +19,11 @@ namespace Rectrans.OCR
             }
         }
 
-        public static string FromMemory(byte[] bytes)
+        public static string Parse(byte[] bytes)
         {
             try
             {
-                using var engine = new TesseractEngine(@".\tessdata", "eng", EngineMode.Default);
+                using var engine = new TesseractEngine(@".\tessdata", "jpn", EngineMode.Default);
                 using var pix = Pix.LoadFromMemory(bytes);
                 using var page = engine.Process(pix);
                 return page.GetText();
