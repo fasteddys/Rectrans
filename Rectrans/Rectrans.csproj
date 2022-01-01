@@ -13,4 +13,15 @@
     <ProjectReference Include="..\Rectrans.OCR\Rectrans.OCR.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Assets\" />
+    <Folder Include="Fonts\" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Model\Json\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
 </Project>

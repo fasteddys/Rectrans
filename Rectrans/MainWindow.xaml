@@ -3,75 +3,62 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Rectrans"
+        xmlns:vm="clr-namespace:Rectrans.ViewModel"
         mc:Ignorable="d"
-        Title="Rectrans" Height="450" Width="800"
-        WindowStartupLocation="CenterScreen">
+        Title="Rectrans机翻" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen"
+        Topmost="{Binding TopMost}">
+
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/View/MenuTemplate.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="语言">
-                <MenuItem Header="源语言(英语)" x:Name="SourceLan_MI">
-                    <MenuItem Header="英语" Click="EN_Click" IsChecked="True"/>
-                    <MenuItem Header="日语" Click="JA_Click"/>
-                    <MenuItem Header="韩语" Click="KO_Click"/>
-                </MenuItem>
-                <MenuItem Header="目标语言(简体中文)" x:Name="TargetLan_MI">
-                    <MenuItem Header="简体中文" IsChecked="True"/>
-                </MenuItem>
-            </MenuItem>
+        <Menu DockPanel.Dock="Top" ItemsSource="{Binding SourceCollection}" />
 
-            <MenuItem Header="自动翻译" x:Name="AutoTrans_MI" Click="AutoTrans_MI_Click">
-                <MenuItem Header="停止"/>
-                <MenuItem Header="2s"/>
-                <MenuItem Header="4s"/>
-                <MenuItem Header="6s"/>
-                <MenuItem Header="8s"/>
-                <MenuItem Header="10s"/>
-            </MenuItem>
-
-            <MenuItem Header="重置区域" x:Name="RectReset_Btn" Click="RectReset_Click"  IsEnabled="False"/>
-
-            <MenuItem Header="窗口置顶" Click="TopMost_Click" IsCheckable="True"/>
-        </Menu>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
-                <Button Content="设置区域" x:Name="Rect_Btn" Click="Rect_Click"/>
-                <Button Content="开始翻译" x:Name="Trans_Btn" Click="Trans_Click" IsEnabled="False"/>
+                <Button Content="开始翻译" Command="{Binding ConfirmCommand}" />
             </ToolBar>
         </ToolBarTray>
 
         <StatusBar DockPanel.Dock="Bottom">
-            <TextBlock Margin="10,0,0,0" x:Name="StatusBar" Text="字数统计(字节): 0"/>
+            <TextBlock Margin="10,0,0,0" Text="{Binding StatusBarText}" />
         </StatusBar>
 
         <Grid Margin="20">
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" Content="原文：" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="25"/>
-            <TextBlock HorizontalAlignment="Stretch"
-                   VerticalAlignment="Top"
-                   Margin="20,20"
-                   Padding="10"
-                   TextWrapping="Wrap"
-                   Text="Waiting..."
-                   FontSize="16"
-                   Height="140"
-                   x:Name="OriginalTextBlock"/>
+            <Label Grid.Row="0" Content="原文：" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="25" />
+            <TextBlock Grid.Row="0" HorizontalAlignment="Stretch"
+                       VerticalAlignment="Top"
+                       Margin="20,20"
+                       Padding="10"
+                       TextWrapping="Wrap"
+                       Text="{Binding SourceText}"
+                       FontSize="16"
+                       Height="140" />
 
-            <Label Grid.Row="1" Content="译文：" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="25"/>
+            <Label Grid.Row="1" Content="译文：" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="25" />
             <TextBlock Grid.Row="1" HorizontalAlignment="Left"
-                   VerticalAlignment="Top"
-                   Margin="20,20"
-                   Padding="10"
-                   TextWrapping="Wrap"
-                   Text="Waiting..."
-                   FontSize="16"
-                   Height="140" Width="700"
-                   x:Name="TranslatedTextBlock"/>
+                       VerticalAlignment="Top"
+                       Margin="20,20"
+                       Padding="10"
+                       TextWrapping="Wrap"
+                       Text="{Binding TargetText}"
+                       FontSize="16"
+                       Height="140" Width="700" />
         </Grid>
     </DockPanel>
 </Window>
