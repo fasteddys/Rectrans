@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Rectrans.ViewModel
 {
@@ -143,14 +144,17 @@ namespace Rectrans.ViewModel
 
         private int _textCount;
 
-        public string StatusBarText
+        private int TextCount
         {
-            get
+            get => _textCount;
+            set
             {
-                _textCount += SourceText.Length;
-                return "字数统计(字节): " + _textCount;
+                _textCount += value;
+                OnPropertyChanged("StatusBarText");
             }
         }
+
+        public string StatusBarText => "字数统计(字节): " + TextCount;
 
         private async Task TranslateAsync()
         {
@@ -162,16 +166,20 @@ namespace Rectrans.ViewModel
 
             var bitmap = new Bitmap(Width, Height);
             using var graphics = Graphics.FromImage(bitmap);
+            // ReSharper disable once UseAwaitUsing
             using var stream = new MemoryStream();
-
             graphics.CopyFromScreen(X, Y, 0, 0, new Size(Width, Height));
             bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
 
             var source = Source.FindItem(x => x.Parent?.Name == "Source" && x.IsChecked)?.Name;
             var target = Source.FindItem(x => x.Parent?.Name == "Target" && x.IsChecked)?.Name;
 
+            if (target == null || source == null) Debugger.Break();
+
             SourceText = Identify.FromMemory(stream.ToArray(), Settings.TrainedData(source));
-            TargetText = await Interpret.WithGoogleAsync(SourceText, Settings.ISO_639_1(target));
+            TargetText = await Interpret.WithGoogleAsync(SourceText, Settings.ISO_639_1(target), Settings.ISO_639_1(source));
+
+            TextCount = SourceText.Length;
         }
 
         private Timer? _timer;

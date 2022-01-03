@@ -48,7 +48,8 @@ namespace Rectrans.Interpreter
         public IEnumerable<Sentence> Sentences { get; set; } = null!;
     }
 
-    internal abstract class Sentence
+    // ReSharper disable once ClassNeverInstantiated.Global
+    internal class Sentence
     {
         public string Trans { get; set; } = null!;
     }
