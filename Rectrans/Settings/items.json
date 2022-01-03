@@ -3,7 +3,7 @@
     "Header": "语言",
     "ItemsSource": [
       {
-        "Name": "SourceLanguage",
+        "Name": "Source",
         "Header": "源语言",
         "ItemsSource": [
           {
@@ -30,7 +30,7 @@
         ]
       },
       {
-        "Name": "TargetLanguage",
+        "Name": "Target",
         "Header": "目标语言",
         "ItemsSource": [
           {
@@ -67,22 +67,22 @@
       {
         "Header": "2s",
         "IsCheckable": true,
-        "Interval": "2000"
+        "Extra": "2000"
       },
       {
         "Header": "4s",
         "IsCheckable": true,
-        "Interval": "4000"
+        "Extra": "4000"
       },
       {
         "Header": "8s",
         "IsCheckable": true,
-        "Interval": "8000"
+        "Extra": "8000"
       },
       {
         "Header": "12s",
         "IsCheckable": true,
-        "Interval": "12000"
+        "Extra": "12000"
       }
     ]
   },

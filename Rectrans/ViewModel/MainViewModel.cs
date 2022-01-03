@@ -4,13 +4,14 @@ using Rectrans.OCR;
 using System.Timers;
 using System.Drawing;
 using Rectrans.Model;
+using Rectrans.Common;
 using Rectrans.Extensions;
 using System.Windows.Input;
 using Rectrans.Interpreter;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Rectrans.ViewModel
 {
@@ -18,7 +19,7 @@ namespace Rectrans.ViewModel
     {
         private ObservableCollection<MenuItem>? _sourceCollection;
 
-        public ObservableCollection<MenuItem> SourceCollection
+        public ObservableCollection<MenuItem> Source
         {
             get
             {
@@ -166,23 +167,23 @@ namespace Rectrans.ViewModel
             graphics.CopyFromScreen(X, Y, 0, 0, new Size(Width, Height));
             bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
 
-            var source = SourceCollection.Recursion(x => x.Parent?.Name == "SourceLanguage" && x.IsChecked)?.Name;
-            var target = SourceCollection.Recursion(x => x.Parent?.Name == "TargetLanguage" && x.IsChecked)?.Name;
+            var source = Source.FindItem(x => x.Parent?.Name == "Source" && x.IsChecked)?.Name;
+            var target = Source.FindItem(x => x.Parent?.Name == "Target" && x.IsChecked)?.Name;
 
-            SourceText = Identify.FromMemory(stream.ToArray(), Language.FindTesseract(source!));
-            TargetText = await Interpret.WithGoogleAsync(SourceText, Language.FindAbrr(target!));
+            SourceText = Identify.FromMemory(stream.ToArray(), Settings.TrainedData(source));
+            TargetText = await Interpret.WithGoogleAsync(SourceText, Settings.ISO_639_1(target));
         }
 
         private Timer? _timer;
 
         private async Task ConfirmAsync()
         {
-            var menuItem = SourceCollection.Recursion(x => (string) x.Parent?.Header! == "自动翻译" && x.IsChecked);
+            var menuItem = Source.FindItem(x => (string) x.Parent?.Header! == "自动翻译" && x.IsChecked);
             if (menuItem != null)
             {
                 _timer ??= new Timer();
 
-                _timer.Interval = menuItem.Interval!.Value;
+                _timer.Interval = (int) menuItem.Extra!;
                 _timer.Elapsed += async (_, _) => { await TranslateAsync(); };
 
                 _timer.Start();
@@ -195,7 +196,7 @@ namespace Rectrans.ViewModel
 
         public ICommand ConfirmCommand
         {
-            get { return _confirmCommand ??= new RelayCommand(async _ => await ConfirmAsync()); }
+            get { return _confirmCommand ??= new RelayCommandAsync(async _ => await ConfirmAsync()); }
         }
 
         public static int X { get; set; }

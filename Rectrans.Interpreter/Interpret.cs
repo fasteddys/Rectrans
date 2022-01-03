@@ -5,11 +5,13 @@ namespace Rectrans.Interpreter
 {
     public static class Interpret
     {
-        public static string WithGoogle(string text, string tl, string? sl = null)
+        public static string WithGoogle(string text, string? tl, string? sl = null)
             => WithGoogleAsync(text, tl, sl).ConfigureAwait(false).GetAwaiter().GetResult();
 
-        public static async Task<string> WithGoogleAsync(string text, string tl, string? sl = null)
+        public static async Task<string> WithGoogleAsync(string text, string? tl, string? sl = null)
         {
+            if (tl is null) throw new ArgumentNullException(tl, "传入的目标语言为 `NULL`.");
+            
             var client = new HttpClient();
             var response = await client.GetAsync($"https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl={sl ?? "auto"}&tl={tl}&q={text}");
 
@@ -46,7 +48,7 @@ namespace Rectrans.Interpreter
         public IEnumerable<Sentence> Sentences { get; set; } = null!;
     }
 
-    internal class Sentence
+    internal abstract class Sentence
     {
         public string Trans { get; set; } = null!;
     }

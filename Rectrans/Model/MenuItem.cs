@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Linq;
+using Newtonsoft.Json;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Rectrans.Model
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class MenuItem : System.Windows.Controls.MenuItem
     {
         public new MenuItem? Parent { get; set; }
@@ -24,31 +26,26 @@ namespace Rectrans.Model
 
         public new IEnumerable<MenuItem>? Items => ItemsSource;
 
-        public int? Interval { get; set; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public object? Extra { get; set; }
     }
 
-    public static class MenuItemExtension
+    public class MenuItemConverter : JsonConverter
     {
-        public static MenuItem? Recursion(this IEnumerable<MenuItem> source,
-            Func<MenuItem, bool> predicate)
+        public override bool CanConvert(Type objectType) => objectType == typeof(IEnumerable);
+
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
+            JsonSerializer serializer)
         {
-            var items = source as MenuItem[] ?? source.ToArray();
-            var item = items.FirstOrDefault(predicate);
-            if (item != null)
+            if (reader.Path.Contains("ItemsSource"))
             {
-                return item;
+                return serializer.Deserialize<IEnumerable<System.Windows.Controls.MenuItem>>(reader);
             }
 
-            foreach (var children in items.Select(x => x.ItemsSource))
-            {
-                var child = children?.Recursion(predicate);
-                if (child != null)
-                {
-                    return child;
-                }
-            }
-
-            return null;
+            return serializer.Deserialize(reader);
         }
+
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) =>
+            serializer.Serialize(writer, value);
     }
 }

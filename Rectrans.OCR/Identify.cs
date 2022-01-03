@@ -8,6 +8,8 @@ namespace Rectrans.OCR
         // ReSharper disable once IdentifierTypo
         public static string FromFile(string filename, string tessdata)
         {
+            if (tessdata is null) throw new ArgumentNullException(tessdata, "传入训练用的数据文件名为 `NULL`.");
+
             try
             {
                 // ReSharper disable once StringLiteralTypo
@@ -23,8 +25,10 @@ namespace Rectrans.OCR
         }
 
         // ReSharper disable once IdentifierTypo
-        public static string FromMemory(byte[] bytes, string tessdata)
+        public static string FromMemory(byte[] bytes, string? tessdata)
         {
+            if (tessdata is null) throw new ArgumentNullException(tessdata, "传入训练用的数据文件名为 `NULL`.");
+
             try
             {
                 // ReSharper disable once StringLiteralTypo

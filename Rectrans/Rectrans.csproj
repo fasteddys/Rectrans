@@ -19,8 +19,8 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<Content Include="Model\Json\**">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<Content Include="Settings\**">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 

@@ -22,7 +22,7 @@
     </Window.Resources>
 
     <DockPanel>
-        <Menu DockPanel.Dock="Top" ItemsSource="{Binding SourceCollection}" />
+        <Menu DockPanel.Dock="Top" ItemsSource="{Binding Source}" />
 
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
