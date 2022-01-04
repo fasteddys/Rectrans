@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using Rectrans.View;
 
 namespace Rectrans
@@ -14,9 +13,9 @@ namespace Rectrans
             InitializeComponent();
             var child = new RectangleView();
             child.Show();
-            RegistEvent();
+            RegisterEvent();
 
-            void RegistEvent()
+            void RegisterEvent()
             {
                 Closed += delegate { child.Close(); };
                 MouseLeftButtonDown += delegate { DragMove(); };

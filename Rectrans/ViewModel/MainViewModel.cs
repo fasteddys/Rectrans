@@ -6,11 +6,14 @@ using System.Timers;
 using System.Drawing;
 using Rectrans.Model;
 using Rectrans.Common;
+using Rectrans.Interface;
 using System.Diagnostics;
+using System.Composition;
 using Rectrans.Extensions;
 using System.Windows.Input;
 using Rectrans.Interpreter;
 using System.ComponentModel;
+using System.Composition.Hosting;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -18,19 +21,28 @@ namespace Rectrans.ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        [Import]
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
+        private IContext Context { get; set; } = null!;
+
+        public MainViewModel()
+        {
+            SetImports();
+        }
+
+        private void SetImports()
+        {
+            var container = new ContainerConfiguration()
+                .WithAssembly(typeof(IContext).Assembly)
+                .CreateContainer();
+            container.SatisfyImports(this);
+        }
+
         private ObservableCollection<MenuItem>? _source;
 
         public ObservableCollection<MenuItem> Source
         {
-            get
-            {
-                if (_source == null)
-                {
-                    _source = BindingCommand(MainModel.Fetch());
-                }
-
-                return _source;
-            }
+            get => _source ??= BindingCommand(MainModel.Fetch());
             set
             {
                 _source = value;
@@ -97,7 +109,7 @@ namespace Rectrans.ViewModel
                 }
             }
 
-            if (current!.Name != "停止" || _timer == null) return;
+            if ((string)current!.Header != "停止" || _timer == null) return;
             _timer.Dispose();
             _timer = null;
         }
@@ -105,18 +117,7 @@ namespace Rectrans.ViewModel
         private ICommand? _menuCommand;
 
         // ReSharper disable once MemberCanBePrivate.Global
-        public ICommand MenuCommand
-        {
-            get
-            {
-                if (_menuCommand == null)
-                {
-                    _menuCommand = new RelayCommand(MenuSelected);
-                }
-
-                return _menuCommand;
-            }
-        }
+        public ICommand MenuCommand => _menuCommand ??= new RelayCommand(MenuSelected);
 
         private string? _sourceText;
 
@@ -164,7 +165,7 @@ namespace Rectrans.ViewModel
                 return;
             }
 
-            System.Windows.Application.Current.Dispatcher.BeginInvoke(async () =>
+            Context.BeginInvoke(async () =>
             {
                 var bitmap = new Bitmap(Width, Height);
                 using var graphics = Graphics.FromImage(bitmap);
@@ -206,10 +207,7 @@ namespace Rectrans.ViewModel
 
         private ICommand? _confirmCommand;
 
-        public ICommand ConfirmCommand
-        {
-            get { return _confirmCommand ??= new RelayCommand(_ => Confirm()); }
-        }
+        public ICommand ConfirmCommand => _confirmCommand ??= new RelayCommand(_ => Confirm());
 
         public static int X { get; set; }
         public static int Y { get; set; }

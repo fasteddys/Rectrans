@@ -5,21 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Rectrans.ViewModel"
         mc:Ignorable="d"
-        Title="Rectrans机翻" Height="450" Width="800"
+        Title="Rectrans 机翻" Height="450" Width="800"
         WindowStartupLocation="CenterScreen"
         Topmost="{Binding TopMost}">
 
     <Window.DataContext>
         <vm:MainViewModel />
     </Window.DataContext>
-
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/View/MenuTemplate.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
 
     <DockPanel>
         <Menu DockPanel.Dock="Top" ItemsSource="{Binding Source}" />
@@ -29,6 +21,8 @@
                 <Button Content="开始翻译" Command="{Binding ConfirmCommand}" />
             </ToolBar>
         </ToolBarTray>
+
+        <Border />
 
         <StatusBar DockPanel.Dock="Bottom">
             <TextBlock Margin="10,0,0,0" Text="{Binding StatusBarText}" />
@@ -41,24 +35,16 @@
             </Grid.RowDefinitions>
 
             <Label Grid.Row="0" Content="原文：" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="25" />
-            <TextBlock Grid.Row="0" HorizontalAlignment="Stretch"
-                       VerticalAlignment="Top"
-                       Margin="20,20"
-                       Padding="10"
-                       TextWrapping="Wrap"
-                       Text="{Binding SourceText}"
-                       FontSize="16"
-                       Height="140" />
+            <ScrollViewer Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,20"
+                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <TextBlock Padding="10" TextWrapping="Wrap" Text="{Binding SourceText}" FontSize="16" />
+            </ScrollViewer>
 
             <Label Grid.Row="1" Content="译文：" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="25" />
-            <TextBlock Grid.Row="1" HorizontalAlignment="Left"
-                       VerticalAlignment="Top"
-                       Margin="20,20"
-                       Padding="10"
-                       TextWrapping="Wrap"
-                       Text="{Binding TargetText}"
-                       FontSize="16"
-                       Height="140" Width="700" />
+            <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,20"
+                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <TextBlock Padding="10" TextWrapping="Wrap" Text="{Binding TargetText}" FontSize="16" />
+            </ScrollViewer>
         </Grid>
     </DockPanel>
 </Window>
