@@ -11,10 +11,13 @@ public static class MenuItemExtension
         Func<MenuItem, bool> predicate)
     {
         var items = source as MenuItem[] ?? source.ToArray();
-        var item = items.FirstOrDefault(predicate);
-        if (item != null)
+
+        foreach (var item in items)
         {
-            return item;
+            if (predicate(item))
+            {
+                return item;
+            }
         }
 
         foreach (var children in items.Select(x => x.ItemsSource))

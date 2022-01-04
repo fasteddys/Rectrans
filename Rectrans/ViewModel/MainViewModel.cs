@@ -1,40 +1,40 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Rectrans.OCR;
 using System.Timers;
 using System.Drawing;
 using Rectrans.Model;
 using Rectrans.Common;
+using System.Diagnostics;
 using Rectrans.Extensions;
 using System.Windows.Input;
 using Rectrans.Interpreter;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace Rectrans.ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<MenuItem>? _sourceCollection;
+        private ObservableCollection<MenuItem>? _source;
 
         public ObservableCollection<MenuItem> Source
         {
             get
             {
-                if (_sourceCollection == null)
+                if (_source == null)
                 {
-                    _sourceCollection = BindingCommand(MainModel.Fetch());
+                    _source = BindingCommand(MainModel.Fetch());
                 }
 
-                return _sourceCollection;
+                return _source;
             }
             set
             {
-                _sourceCollection = value;
-                OnPropertyChanged("SourceCollection");
+                _source = value;
+                OnPropertyChanged("Source");
             }
         }
 
@@ -156,7 +156,7 @@ namespace Rectrans.ViewModel
 
         public string StatusBarText => "字数统计(字节): " + TextCount;
 
-        private async Task TranslateAsync()
+        private void Translate()
         {
             if (Width == 0 || Height == 0)
             {
@@ -164,47 +164,51 @@ namespace Rectrans.ViewModel
                 return;
             }
 
-            var bitmap = new Bitmap(Width, Height);
-            using var graphics = Graphics.FromImage(bitmap);
-            // ReSharper disable once UseAwaitUsing
-            using var stream = new MemoryStream();
-            graphics.CopyFromScreen(X, Y, 0, 0, new Size(Width, Height));
-            bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+            System.Windows.Application.Current.Dispatcher.BeginInvoke(async () =>
+            {
+                var bitmap = new Bitmap(Width, Height);
+                using var graphics = Graphics.FromImage(bitmap);
+                // ReSharper disable once UseAwaitUsing
+                using var stream = new MemoryStream();
+                graphics.CopyFromScreen(X, Y, 0, 0, new Size(Width, Height));
+                bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
 
-            var source = Source.FindItem(x => x.Parent?.Name == "Source" && x.IsChecked)?.Name;
-            var target = Source.FindItem(x => x.Parent?.Name == "Target" && x.IsChecked)?.Name;
+                var source = Source.FindItem(x => x.Parent?.Name == "Source" && x.IsChecked)?.Name;
+                var target = Source.FindItem(x => x.Parent?.Name == "Target" && x.IsChecked)?.Name;
 
-            if (target == null || source == null) Debugger.Break();
+                if (target == null || source == null) Debugger.Break();
 
-            SourceText = Identify.FromMemory(stream.ToArray(), Settings.TrainedData(source));
-            TargetText = await Interpret.WithGoogleAsync(SourceText, Settings.ISO_639_1(target), Settings.ISO_639_1(source));
+                SourceText = Identify.FromMemory(stream.ToArray(), Settings.TrainedData(source));
+                TargetText = await Interpret.WithGoogleAsync(SourceText, Settings.ISO_639_1(target),
+                    Settings.ISO_639_1(source));
 
-            TextCount = SourceText.Length;
+                TextCount = SourceText.Length;
+            });
         }
 
         private Timer? _timer;
 
-        private async Task ConfirmAsync()
+        private void Confirm()
         {
             var menuItem = Source.FindItem(x => (string) x.Parent?.Header! == "自动翻译" && x.IsChecked);
             if (menuItem != null)
             {
                 _timer ??= new Timer();
 
-                _timer.Interval = (int) menuItem.Extra!;
-                _timer.Elapsed += async (_, _) => { await TranslateAsync(); };
+                _timer.Interval = Convert.ToInt16(menuItem.Extra!);
+                _timer.Elapsed += (_, _) => { Translate(); };
 
                 _timer.Start();
             }
 
-            await TranslateAsync();
+            Translate();
         }
 
         private ICommand? _confirmCommand;
 
         public ICommand ConfirmCommand
         {
-            get { return _confirmCommand ??= new RelayCommandAsync(async _ => await ConfirmAsync()); }
+            get { return _confirmCommand ??= new RelayCommand(_ => Confirm()); }
         }
 
         public static int X { get; set; }

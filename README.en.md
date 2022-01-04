@@ -13,7 +13,7 @@ and the recognized text is translated. No need for `hook`, basically suitable fo
 
 1. Frame the rectangular area for translation..
 2. Auto translate.
-3. Provide translation of `English`→`Simplified Chinese`  `Japanese`→`Simplified Chinese` `Korean`→`Simplified Chinese`.
+3. Provide `Simplified Chinese` `English` `Japanese` `Korean` mutual translation. 
 4. Topmost of the main window. 
 5. The original text display. 
 6. The translation display. 

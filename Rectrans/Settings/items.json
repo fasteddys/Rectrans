@@ -67,22 +67,22 @@
       {
         "Header": "2s",
         "IsCheckable": true,
-        "Extra": "2000"
+        "Extra": 2000
       },
       {
         "Header": "4s",
         "IsCheckable": true,
-        "Extra": "4000"
+        "Extra": 4000
       },
       {
         "Header": "8s",
         "IsCheckable": true,
-        "Extra": "8000"
+        "Extra": 8000
       },
       {
         "Header": "12s",
         "IsCheckable": true,
-        "Extra": "12000"
+        "Extra": 12000
       }
     ]
   },
