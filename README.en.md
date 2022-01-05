@@ -26,19 +26,13 @@ and the recognized text is translated. No need for `hook`, basically suitable fo
 3. Font Family setting.
 
 
-### MainWindow
-
-![](ui.png)
-
-
 ### Preview
 
 ![](preview1.png)
 
+![](preview2.png)
 
-### Mind Mapping
-
-![](mind.png)
+![](preview3.png)
 
 
 ### README.md

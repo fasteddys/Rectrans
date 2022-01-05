@@ -25,19 +25,13 @@
 3. 字体设置功能。
 
 
-### 主程序
-
-![](ui.png)
-
-
 ### 预览图
 
 ![](preview1.png)
 
+![](preview2.png)
 
-### 思维导图
-
-![](mind.png)
+![](preview3.png)
 
 
 ### README.md
