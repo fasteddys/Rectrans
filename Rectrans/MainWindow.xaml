@@ -22,13 +22,31 @@
             </ToolBar>
         </ToolBarTray>
 
-        <Border />
-
         <StatusBar DockPanel.Dock="Bottom">
             <TextBlock Margin="10,0,0,0" Text="{Binding StatusBarText}" />
         </StatusBar>
 
-        <Grid Margin="20">
+        <Border DockPanel.Dock="Bottom" Background="{Binding MessageBorderBackground}"
+                Visibility="{Binding MessageBorderVisibility}" Padding="20,0" Height="30">
+            <Grid>
+                <TextBlock VerticalAlignment="Center" TextAlignment="Center" Text="{Binding MessageBorderText}" />
+                <TextBlock VerticalAlignment="Center" TextAlignment="Right" Text="{Binding MessageBorderHyperlinkText}"
+                           Visibility="{Binding MessageBorderHyperlinkVisibility}">
+                    <TextBlock.InputBindings>
+                        <MouseBinding Command="{Binding MessageBorderHyperlinkCommand}" MouseAction="LeftClick"></MouseBinding>
+                    </TextBlock.InputBindings>
+                </TextBlock>
+                <Button HorizontalAlignment="Right" Width="20" Height="20" Background="Transparent"
+                        BorderBrush="Transparent" Visibility="{Binding MessageBorderCloseButtonVisibility}"
+                        Command="{Binding MessageBorderCloseButtonCommand}">
+                    <StackPanel>
+                        <Image Source="Assets/Image/MenuIcon/Close.png"></Image>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+
+        <Grid Margin="20" DockPanel.Dock="Top">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />

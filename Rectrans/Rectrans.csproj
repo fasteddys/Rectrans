@@ -22,6 +22,9 @@
 		<Content Include="Settings\**">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+        <Content Include="Assets\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
 	</ItemGroup>
 
 	<ItemGroup>

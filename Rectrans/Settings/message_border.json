@@ -1,0 +1,14 @@
+[
+  {
+    "Key": "Message",
+    "Background": "Gray"
+  },
+  {
+    "Key": "Warning",
+    "Background": "Khaki"
+  },
+  {
+    "Key": "Error",
+    "Background": "Brown"
+  }
+]

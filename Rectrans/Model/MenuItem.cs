@@ -8,6 +8,8 @@ namespace Rectrans.Model
     // ReSharper disable once ClassNeverInstantiated.Global
     public class MenuItem : System.Windows.Controls.MenuItem
     {
+        public string Key { get; set; } = null!;
+
         public new MenuItem? Parent { get; set; }
 
         public new IEnumerable<MenuItem>? ItemsSource

@@ -12,7 +12,7 @@ namespace Rectrans.Model
         };
 
         public static IEnumerable<MenuItem> Fetch()
-            => JsonConvert.DeserializeObject<IEnumerable<MenuItem>>(Settings.GetJsonStr("Settings/items.json"),
+            => JsonConvert.DeserializeObject<IEnumerable<MenuItem>>(Settings.GetJsonStr("Settings/menu_items_data.json"),
                 MenuItemSerializerSettings)!;
     }
 }

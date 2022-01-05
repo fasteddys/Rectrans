@@ -1,24 +1,24 @@
 [
   {
-    "Name": "English",
+    "Key": "English",
     "ISO_639_1": "en",
     "Description": "英语",
     "TrainedData": "eng"
   },
   {
-    "Name": "Japanese",
+    "Key": "Japanese",
     "ISO_639_1": "ja",
     "Description": "日语",
     "TrainedData": "jpn"
   },
   {
-    "Name": "Korean",
+    "Key": "Korean",
     "ISO_639_1": "ko",
     "Description": "韩语",
     "TrainedData": "kor"
   },
   {
-    "Name": "ChineseSimplified",
+    "Key": "ChineseSimplified",
     "ISO_639_1": "zh",
     "Description": "简体中文",
     "TrainedData": "chi_sim"

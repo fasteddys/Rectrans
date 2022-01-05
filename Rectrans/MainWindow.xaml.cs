@@ -1,32 +1,53 @@
 ﻿using System.Windows;
+using Rectrans.EventHandlers;
 using Rectrans.View;
+using Rectrans.ViewModel;
 
 namespace Rectrans
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
+        // ReSharper disable once InconsistentNaming
+        private readonly MainViewModel ViewModel;
+        
         public MainWindow()
         {
             InitializeComponent();
-            var child = new RectangleView();
-            child.Show();
-            RegisterEvent();
+            MouseLeftButtonDown += delegate { DragMove(); };
+            var rectangleView = new RectangleView();
+            ViewModel = new MainViewModel();
 
-            void RegisterEvent()
+            OnRectangleViewCreated(rectangleView);
+            ViewModel.RectangleViewCreated += delegate(object? _, RectangleViewCreatedEventArgs args)
             {
-                Closed += delegate { child.Close(); };
-                MouseLeftButtonDown += delegate { DragMove(); };
-                StateChanged += delegate
+                OnRectangleViewCreated(args.RectangleView);
+            };
+            DataContext = ViewModel;
+
+            rectangleView.Show();
+        }
+
+        private void OnRectangleViewCreated(RectangleView rectangleView)
+        {
+            Closed += delegate { rectangleView.Close(); };
+            StateChanged += delegate
+            {
+                if (WindowState != WindowState.Maximized)
                 {
-                    if (WindowState != WindowState.Maximized)
-                    {
-                        child.WindowState = WindowState;
-                    }
-                };
-            }
+                    rectangleView.WindowState = WindowState;
+                }
+            };
+
+            rectangleView.Closed += delegate
+            {
+                if (IsLoaded)
+                {
+                    ViewModel.OnRectangleViewAbnormalClosed();
+                }
+            };
         }
     }
 }
