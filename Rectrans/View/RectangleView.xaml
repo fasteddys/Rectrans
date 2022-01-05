@@ -4,18 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Rectrans.ViewModel"
+        xmlns:local="clr-namespace:Rectrans.Controls"
         mc:Ignorable="d"
-        Top="{Binding Y, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
-        Left="{Binding X, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
-        Width="{Binding Width, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, FallbackValue=500}"
-        Height="{Binding Height, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, FallbackValue=200}"
+        Height="200" Width="500"
+        Opacity="{Binding Opacity}"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource WindowStyle.Rect}"
         WindowChrome.WindowChrome="{DynamicResource WindowChrome}"
         Title="翻译区域">
 
     <Window.DataContext>
-        <vm:MainViewModel />
+        <vm:RectangleViewModel />
     </Window.DataContext>
 
     <Window.Resources>
@@ -25,4 +24,6 @@
             </WindowChrome.ResizeBorderThickness>
         </WindowChrome>
     </Window.Resources>
+    
+    <local:MessageBorder VerticalAlignment="Bottom" />
 </Window>

@@ -64,5 +64,7 @@ public abstract class ViewModelBase : IMessageBorder, INotifyPropertyChanged
     public string MessageBorderHyperlinkText { get; set; } = null!;
     public ICommand MessageBorderHyperlinkCommand { get; set; } = null!;
     public ICommand MessageBorderCloseButtonCommand { get; set; } = null!;
-    public abstract void OnMessageBorderHyperlinkClick(object? parameter);
+
+    public virtual void OnMessageBorderHyperlinkClick(object? parameter)
+        => MessageBorderMonitor.CloseMessageBorder();
 }

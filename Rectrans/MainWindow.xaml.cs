@@ -12,7 +12,7 @@ namespace Rectrans
     {
         // ReSharper disable once InconsistentNaming
         private readonly MainViewModel ViewModel;
-        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -47,6 +47,14 @@ namespace Rectrans
                 {
                     ViewModel.OnRectangleViewAbnormalClosed();
                 }
+            };
+
+            rectangleView.LayoutUpdated += delegate
+            {
+                ViewModel.X = (int) rectangleView.Left;
+                ViewModel.Y = (int) rectangleView.Top;
+                ViewModel.Height = (int) rectangleView.Height;
+                ViewModel.Width = (int) rectangleView.Width;
             };
         }
     }

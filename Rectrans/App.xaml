@@ -10,7 +10,6 @@
                 <Setter Property="AllowsTransparency" Value="True"/>
             </Style>
             <Style x:Key ="WindowStyle.Rect" TargetType="{x:Type Window}" BasedOn="{StaticResource WindowStyle.None}">
-                <Setter Property="Opacity" Value="0.2"/>
                 <Setter Property="Topmost" Value="True"/>
                 <Setter Property="BorderThickness" Value="2"/>
                 <Setter Property="BorderBrush" Value="Black"/>

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Rectrans.ViewModel"
+        xmlns:local="clr-namespace:Rectrans.Controls"
         mc:Ignorable="d"
         Title="Rectrans 机翻" Height="450" Width="800"
         WindowStartupLocation="CenterScreen"
@@ -26,25 +27,7 @@
             <TextBlock Margin="10,0,0,0" Text="{Binding StatusBarText}" />
         </StatusBar>
 
-        <Border DockPanel.Dock="Bottom" Background="{Binding MessageBorderBackground}"
-                Visibility="{Binding MessageBorderVisibility}" Padding="20,0" Height="30">
-            <Grid>
-                <TextBlock VerticalAlignment="Center" TextAlignment="Center" Text="{Binding MessageBorderText}" />
-                <TextBlock VerticalAlignment="Center" TextAlignment="Right" Text="{Binding MessageBorderHyperlinkText}"
-                           Visibility="{Binding MessageBorderHyperlinkVisibility}">
-                    <TextBlock.InputBindings>
-                        <MouseBinding Command="{Binding MessageBorderHyperlinkCommand}" MouseAction="LeftClick"></MouseBinding>
-                    </TextBlock.InputBindings>
-                </TextBlock>
-                <Button HorizontalAlignment="Right" Width="20" Height="20" Background="Transparent"
-                        BorderBrush="Transparent" Visibility="{Binding MessageBorderCloseButtonVisibility}"
-                        Command="{Binding MessageBorderCloseButtonCommand}">
-                    <StackPanel>
-                        <Image Source="Assets/Image/MenuIcon/Close.png"></Image>
-                    </StackPanel>
-                </Button>
-            </Grid>
-        </Border>
+        <local:MessageBorder DockPanel.Dock="Bottom" />
 
         <Grid Margin="20" DockPanel.Dock="Top">
             <Grid.RowDefinitions>

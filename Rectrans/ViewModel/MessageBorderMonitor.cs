@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Rectrans.Common;
 using Rectrans.Interface;
@@ -16,6 +18,16 @@ public class MessageBorderMonitor
     }
 
     #region OnWarning
+
+    public async void OnWarningWithTimeout(string messageBorderText, int millisecondsDelay, Action? callback = null)
+    {
+        OnWarning(messageBorderText);
+        OnPropertyChanged();
+
+        await Task.Delay(millisecondsDelay);
+        callback?.Invoke();
+        CloseMessageBorder();
+    }
 
     public void OnWarningWithHyperlinkText(string messageBorderText, string hyperlinkText)
     {
@@ -38,6 +50,16 @@ public class MessageBorderMonitor
 
     #region OnMessage
 
+    public async void OnMessageWithTimeout(string messageBorderText, int millisecondsDelay, Action? callback = null)
+    {
+        OnMessage(messageBorderText);
+        OnPropertyChanged();
+
+        await Task.Delay(millisecondsDelay);
+        callback?.Invoke();
+        CloseMessageBorder();
+    }
+
     public void OnMessageWithHyperlinkText(string messageBorderText, string hyperlinkText)
     {
         OnMessage(messageBorderText);
@@ -58,6 +80,16 @@ public class MessageBorderMonitor
     #endregion
 
     #region OnError
+
+    public async void OnErrorWithTimeout(string messageBorderText, int millisecondsDelay, Action? callback = null)
+    {
+        OnError(messageBorderText);
+        OnPropertyChanged();
+
+        await Task.Delay(millisecondsDelay);
+        callback?.Invoke();
+        CloseMessageBorder();
+    }
 
     public void OnErrorWithHyperlinkText(string messageBorderText, string hyperlinkText)
     {

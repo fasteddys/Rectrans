@@ -186,7 +186,6 @@ public class MainViewModel : ViewModelBase
     public void OnRectangleViewAbnormalClosed() =>
         MessageBorderMonitor.OnWarningWithHyperlinkText(@"您已关闭“翻译区域”窗口，请点击""重置""按钮进行恢复！", "重置");
 
-
     public override void OnMessageBorderHyperlinkClick(object? parameter)
     {
         MessageBorderMonitor.CloseMessageBorder();
@@ -204,8 +203,8 @@ public class MainViewModel : ViewModelBase
         RectangleViewCreated?.Invoke(this, new RectangleViewCreatedEventArgs(rectangleView));
     }
 
-    public static int X { get; set; }
-    public static int Y { get; set; }
-    public static int Width { get; set; }
-    public static int Height { get; set; }
+    public int X { get; set; }
+    public int Y { get; set; }
+    public int Width { get; set; }
+    public int Height { get; set; }
 }
