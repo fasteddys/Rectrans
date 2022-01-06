@@ -6,6 +6,7 @@
         xmlns:vm="clr-namespace:Rectrans.ViewModel"
         xmlns:local="clr-namespace:Rectrans.Controls"
         mc:Ignorable="d"
+        Style="{StaticResource WindowStyle.Main}"
         Title="Rectrans 机翻" Height="450" Width="800"
         WindowStartupLocation="CenterScreen"
         Topmost="{Binding TopMost}">

@@ -15,6 +15,9 @@
                 <Setter Property="BorderBrush" Value="Black"/>
                 <Setter Property="ResizeMode" Value="CanResize"/>
             </Style>
+            <Style x:Key="WindowStyle.Main" TargetType="{x:Type Window}">
+                <Setter Property="FontFamily" Value="Fonts/#FiraCode Regular"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
