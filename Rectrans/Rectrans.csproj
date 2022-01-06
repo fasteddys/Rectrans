@@ -9,17 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Rectrans.Interpreter\Rectrans.Interpreter.csproj"/>
-        <ProjectReference Include="..\Rectrans.OCR\Rectrans.OCR.csproj"/>
+        <ProjectReference Include="..\Rectrans.Interpreter\Rectrans.Interpreter.csproj" />
+        <ProjectReference Include="..\Rectrans.OCR\Rectrans.OCR.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Composition" Version="6.0.0"/>
+        <PackageReference Include="System.Composition" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Assets\"/>
-        <Folder Include="Fonts\"/>
+        <Folder Include="Assets\" />
+        <Folder Include="Fonts\" />
     </ItemGroup>
 
     <ItemGroup>

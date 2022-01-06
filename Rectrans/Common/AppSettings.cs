@@ -35,26 +35,18 @@ public static class AppSettings
 
     private static JObject? GetJObject(JToken source, string key)
     {
-        foreach (var jt in source)
+        switch (source)
         {
-            switch (jt)
-            {
-                case JArray:
-                    GetJObject(jt, key);
-                    break;
-                case JObject jo when jo["Key"]?.Value<string>() == key:
-                    return jo;
-                default:
-                    foreach (var child in jt)
-                    {
-                        if (child is JArray)
-                        {
-                            GetJObject(jt, key);
-                        }
-                    }
+            case JObject jo when jo["Key"]?.Value<string>() == key:
+                return jo;
+            default:
+                foreach (var item in source)
+                {
+                    var jo = GetJObject(item, key);
+                    if (jo != null) return jo;
+                }
 
-                    break;
-            }
+                break;
         }
 
         return null;

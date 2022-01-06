@@ -4,7 +4,6 @@ using System.Linq;
 using Rectrans.OCR;
 using System.Timers;
 using Rectrans.View;
-using System.Drawing;
 using Rectrans.Model;
 using Rectrans.Common;
 using System.Diagnostics;
@@ -14,7 +13,6 @@ using Rectrans.Interpreter;
 using Rectrans.EventHandlers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Size = System.Drawing.Size;
 
 namespace Rectrans.ViewModel;
 
@@ -141,12 +139,12 @@ public class MainViewModel : ViewModelBase
 
         Context.BeginInvoke(async () =>
         {
-            var bitmap = new Bitmap(Width, Height);
-            using var graphics = Graphics.FromImage(bitmap);
+            var bitmap = Dpi.Screenshot(X, Y, Height, Width);
             // ReSharper disable once UseAwaitUsing
             using var stream = new MemoryStream();
-            graphics.CopyFromScreen(X, Y, 0, 0, new Size(Width, Height));
             bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+            
+            bitmap.Save("debug.png", System.Drawing.Imaging.ImageFormat.Png);
 
             var source = Source.FindItem(x => x.Parent?.Key == "Source" && x.IsChecked)?.Key;
             var target = Source.FindItem(x => x.Parent?.Key == "Target" && x.IsChecked)?.Key;
@@ -203,8 +201,8 @@ public class MainViewModel : ViewModelBase
         RectangleViewCreated?.Invoke(this, new RectangleViewCreatedEventArgs(rectangleView));
     }
 
-    public int X { get; set; }
-    public int Y { get; set; }
-    public int Width { get; set; }
-    public int Height { get; set; }
+    public double X { get; set; }
+    public double Y { get; set; }
+    public double Width { get; set; }
+    public double Height { get; set; }
 }
