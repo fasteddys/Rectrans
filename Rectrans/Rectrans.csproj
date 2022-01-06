@@ -1,34 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net6.0-windows;net48</TargetFrameworks>
-	<LangVersion>10.0</LangVersion>
-    <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFrameworks>net6.0-windows;net48</TargetFrameworks>
+        <LangVersion>10.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Rectrans.Interpreter\Rectrans.Interpreter.csproj" />
-    <ProjectReference Include="..\Rectrans.OCR\Rectrans.OCR.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Rectrans.Interpreter\Rectrans.Interpreter.csproj"/>
+        <ProjectReference Include="..\Rectrans.OCR\Rectrans.OCR.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Assets\" />
-    <Folder Include="Fonts\" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="System.Composition" Version="6.0.0"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<Content Include="Settings\**">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
+    <ItemGroup>
+        <Folder Include="Assets\"/>
+        <Folder Include="Fonts\"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <Content Include="Assets\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-	</ItemGroup>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="System.Composition" Version="6.0.0" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
 </Project>

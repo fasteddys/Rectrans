@@ -1,21 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-	<LangVersion>10.0</LangVersion>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>10.0</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-    <PackageReference Include="Tesseract" Version="4.1.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="System.Drawing.Common" Version="6.0.0"/>
+        <PackageReference Include="Tesseract" Version="4.1.1"/>
+    </ItemGroup>
 
-  <ItemGroup>
-	<Content Include="tessdata\**">
-		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	</Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="tessdata\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
 </Project>

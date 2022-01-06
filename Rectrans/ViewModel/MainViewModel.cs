@@ -24,7 +24,7 @@ public class MainViewModel : ViewModelBase
 
     public ObservableCollection<MenuItem> Source
     {
-        get => _source ??= BindingCommand(Settings.FetchMenuItems());
+        get => _source ??= BindingCommand(AppSettings.MenuItems);
         set
         {
             _source = value;
@@ -153,9 +153,9 @@ public class MainViewModel : ViewModelBase
 
             if (target == null || source == null) Debugger.Break();
 
-            SourceText = Identify.FromMemory(stream.ToArray(), Settings.TrainedData(source));
-            TargetText = await Interpret.WithGoogleAsync(SourceText, Settings.ISO_639_1(target),
-                Settings.ISO_639_1(source));
+            SourceText = Identify.FromMemory(stream.ToArray(), AppSettings.TrainedData(source));
+            TargetText = await Interpret.WithGoogleAsync(SourceText, AppSettings.ISO_639_1(target),
+                AppSettings.ISO_639_1(source));
 
             TextCount = SourceText.Length;
         });

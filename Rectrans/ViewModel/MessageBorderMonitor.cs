@@ -114,8 +114,8 @@ public class MessageBorderMonitor
 
     private void OnWarning(string messageBorderText)
     {
-        var background = Settings.GetMessageBorderBackground("Warning") ??
-                         throw Settings.KeyNotFoundException("Warning");
+        var background = AppSettings.GetMessageBorderBackground("Warning") ??
+                         throw AppSettings.KeyNotFoundException("Warning");
 
         MessageBorder.MessageBorderVisibility = Visible;
         MessageBorder.MessageBorderBackground = background;
@@ -124,8 +124,8 @@ public class MessageBorderMonitor
 
     private void OnMessage(string messageBorderText)
     {
-        var background = Settings.GetMessageBorderBackground("Message") ??
-                         throw Settings.KeyNotFoundException("Message");
+        var background = AppSettings.GetMessageBorderBackground("Message") ??
+                         throw AppSettings.KeyNotFoundException("Message");
 
         MessageBorder.MessageBorderVisibility = Visible;
         MessageBorder.MessageBorderBackground = background;
@@ -134,8 +134,8 @@ public class MessageBorderMonitor
 
     private void OnError(string messageBorderText)
     {
-        var background = Settings.GetMessageBorderBackground("Error") ??
-                         throw Settings.KeyNotFoundException("Error");
+        var background = AppSettings.GetMessageBorderBackground("Error") ??
+                         throw AppSettings.KeyNotFoundException("Error");
 
         MessageBorder.MessageBorderVisibility = Visible;
         MessageBorder.MessageBorderBackground = background;
