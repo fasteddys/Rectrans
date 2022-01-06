@@ -1,7 +1,7 @@
 ﻿using System.Windows;
+using Rectrans.Views;
+using Rectrans.ViewModels;
 using Rectrans.EventHandlers;
-using Rectrans.View;
-using Rectrans.ViewModel;
 
 namespace Rectrans
 {

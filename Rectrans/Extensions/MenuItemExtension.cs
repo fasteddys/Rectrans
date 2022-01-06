@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Rectrans.Model;
+using Rectrans.Models;
 using System.Collections.Generic;
 
 namespace Rectrans.Extensions;

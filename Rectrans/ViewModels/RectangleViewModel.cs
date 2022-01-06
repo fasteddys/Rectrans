@@ -1,4 +1,4 @@
-namespace Rectrans.ViewModel;
+namespace Rectrans.ViewModels;
 
 public class RectangleViewModel : ViewModelBase
 {

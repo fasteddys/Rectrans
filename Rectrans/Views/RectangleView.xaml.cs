@@ -1,4 +1,4 @@
-﻿namespace Rectrans.View
+﻿namespace Rectrans.Views
 {
     /// <summary>
     /// RectangleWindow.xaml 的交互逻辑

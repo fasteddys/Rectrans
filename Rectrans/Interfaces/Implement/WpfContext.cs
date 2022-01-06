@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Threading;
 
-namespace Rectrans.Interface.Implement;
+namespace Rectrans.Interfaces.Implement;
 
 [Export(typeof(IContext))]
 public class WpfContext : IContext

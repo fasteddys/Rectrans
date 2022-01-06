@@ -1,12 +1,12 @@
 using System;
-using System.Diagnostics;
 using System.Composition;
-using Rectrans.Interface;
+using System.Diagnostics;
+using Rectrans.Interfaces;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.Composition.Hosting;
 
-namespace Rectrans.ViewModel;
+namespace Rectrans.ViewModels;
 
 public abstract class ViewModelBase : IMessageBorder, INotifyPropertyChanged
 {

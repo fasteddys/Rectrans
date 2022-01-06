@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:Rectrans.ViewModel"
-        xmlns:local="clr-namespace:Rectrans.Controls"
+        xmlns:controls="clr-namespace:Rectrans.Views.Controls"
+        xmlns:viewModels="clr-namespace:Rectrans.ViewModels"
         mc:Ignorable="d"
         Style="{StaticResource WindowStyle.Main}"
         Title="Rectrans 机翻" Height="450" Width="800"
@@ -12,7 +12,7 @@
         Topmost="{Binding TopMost}">
 
     <Window.DataContext>
-        <vm:MainViewModel />
+        <viewModels:MainViewModel />
     </Window.DataContext>
 
     <DockPanel>
@@ -28,7 +28,7 @@
             <TextBlock Margin="10,0,0,0" Text="{Binding StatusBarText}" />
         </StatusBar>
 
-        <local:MessageBorder DockPanel.Dock="Bottom" />
+        <controls:MessageBorder DockPanel.Dock="Bottom" />
 
         <Grid Margin="20" DockPanel.Dock="Top">
             <Grid.RowDefinitions>

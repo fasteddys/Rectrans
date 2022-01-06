@@ -1,5 +1,5 @@
 using System;
-using Rectrans.View;
+using Rectrans.Views;
 
 namespace Rectrans.EventHandlers;
 

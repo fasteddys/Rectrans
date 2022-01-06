@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Rectrans.Common
+namespace Rectrans.Utilities
 {
     public class RelayCommand : ICommand
     {

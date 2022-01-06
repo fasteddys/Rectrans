@@ -1,6 +1,6 @@
 using System;
 
-namespace Rectrans.Interface;
+namespace Rectrans.Interfaces;
 
 public interface IContext
 {

@@ -1,4 +1,4 @@
-<UserControl x:Class="Rectrans.Controls.MessageBorder"
+<UserControl x:Class="Rectrans.Views.Controls.MessageBorder"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -20,7 +20,7 @@
                     BorderBrush="Transparent" Visibility="{Binding MessageBorderCloseButtonVisibility}"
                     Command="{Binding MessageBorderCloseButtonCommand}">
                 <StackPanel>
-                    <Image Source="../Assets/Image/MenuIcon/Close.png"></Image>
+                    <Image Source="../../Assets/Image/MenuIcon/Close.png"></Image>
                 </StackPanel>
             </Button>
         </Grid>

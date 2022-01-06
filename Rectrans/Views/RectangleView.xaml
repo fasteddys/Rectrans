@@ -1,10 +1,10 @@
-﻿<Window x:Class="Rectrans.View.RectangleView"
+﻿<Window x:Class="Rectrans.Views.RectangleView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:Rectrans.ViewModel"
-        xmlns:local="clr-namespace:Rectrans.Controls"
+        xmlns:controls="clr-namespace:Rectrans.Views.Controls"
+        xmlns:viewModels="clr-namespace:Rectrans.ViewModels"
         mc:Ignorable="d"
         Height="200" Width="500"
         Opacity="{Binding Opacity}"
@@ -14,7 +14,7 @@
         Title="翻译区域">
 
     <Window.DataContext>
-        <vm:RectangleViewModel />
+        <viewModels:RectangleViewModel />
     </Window.DataContext>
 
     <Window.Resources>
@@ -24,6 +24,14 @@
             </WindowChrome.ResizeBorderThickness>
         </WindowChrome>
     </Window.Resources>
-    
-    <local:MessageBorder VerticalAlignment="Bottom" />
+
+    <Grid>
+        <Border Height="30" VerticalAlignment="Top" Background="Aqua">
+            <StackPanel Orientation="Horizontal">
+                <Button Height="20" Content="开始翻译"></Button>
+                <Button Height="20" Content="开始翻译"></Button>
+            </StackPanel>
+        </Border>
+        <controls:MessageBorder VerticalAlignment="Bottom" />
+    </Grid>
 </Window>

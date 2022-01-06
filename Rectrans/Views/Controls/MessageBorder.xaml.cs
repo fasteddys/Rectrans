@@ -1,4 +1,4 @@
-namespace Rectrans.Controls;
+namespace Rectrans.Views.Controls;
 
 public partial class MessageBorder
 {

@@ -1,10 +1,10 @@
 using System;
 using System.IO;
-using Rectrans.Model;
+using Rectrans.Models;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace Rectrans.Common;
+namespace Rectrans.Utilities;
 
 public static class AppSettings
 {

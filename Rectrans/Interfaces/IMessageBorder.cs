@@ -1,6 +1,6 @@
 using System.Windows.Input;
 
-namespace Rectrans.Interface;
+namespace Rectrans.Interfaces;
 
 public interface IMessageBorder
 {

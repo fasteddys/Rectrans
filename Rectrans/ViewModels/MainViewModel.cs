@@ -2,18 +2,18 @@
 using System.Linq;
 using Rectrans.OCR;
 using System.Timers;
-using Rectrans.View;
-using Rectrans.Model;
-using Rectrans.Common;
+using Rectrans.Views;
+using Rectrans.Models;
+using Rectrans.Utilities;
 using System.Diagnostics;
 using Rectrans.Extensions;
-using System.Windows.Input;
 using Rectrans.Interpreter;
+using System.Windows.Input;
 using Rectrans.EventHandlers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Rectrans.ViewModel;
+namespace Rectrans.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
@@ -144,7 +144,7 @@ public class MainViewModel : ViewModelBase
             if (target == null || source == null) Debugger.Break();
 
             var sourceText = Identify.FromScreen(X, Y, Height, Width, AppSettings.TrainedData(source));
-            
+
             // if the sourceText not change, return
             if (sourceText == SourceText) return;
 

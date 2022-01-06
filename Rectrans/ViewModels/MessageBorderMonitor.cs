@@ -1,10 +1,10 @@
 using System;
-using System.Threading.Tasks;
+using Rectrans.Utilities;
+using Rectrans.Interfaces;
 using System.Windows.Input;
-using Rectrans.Common;
-using Rectrans.Interface;
+using System.Threading.Tasks;
 
-namespace Rectrans.ViewModel;
+namespace Rectrans.ViewModels;
 
 public class MessageBorderMonitor
 {
