@@ -52,6 +52,7 @@ public static class AppSettings
         return null;
     }
 
+    // ReSharper disable once StringLiteralTypo
     private static JToken JToken =>
         JToken.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "appsettings.json")));
 

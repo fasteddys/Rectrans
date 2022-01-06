@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using Rectrans.OCR;
 using System.Timers;
@@ -139,23 +138,21 @@ public class MainViewModel : ViewModelBase
 
         Context.BeginInvoke(async () =>
         {
-            var bitmap = Dpi.Screenshot(X, Y, Height, Width);
-            // ReSharper disable once UseAwaitUsing
-            using var stream = new MemoryStream();
-            bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-            
-            bitmap.Save("debug.png", System.Drawing.Imaging.ImageFormat.Png);
-
             var source = Source.FindItem(x => x.Parent?.Key == "Source" && x.IsChecked)?.Key;
             var target = Source.FindItem(x => x.Parent?.Key == "Target" && x.IsChecked)?.Key;
 
             if (target == null || source == null) Debugger.Break();
 
-            SourceText = Identify.FromMemory(stream.ToArray(), AppSettings.TrainedData(source));
-            TargetText = await Interpret.WithGoogleAsync(SourceText, AppSettings.ISO_639_1(target),
+            var sourceText = Identify.FromScreen(X, Y, Height, Width, AppSettings.TrainedData(source));
+            
+            // if the sourceText not change, return
+            if (sourceText == SourceText) return;
+
+            SourceText = sourceText;
+            TargetText = await Interpret.WithGoogleAsync(sourceText, AppSettings.ISO_639_1(target),
                 AppSettings.ISO_639_1(source));
 
-            TextCount = SourceText.Length;
+            TextCount = sourceText.Length;
         });
     }
 

@@ -1,16 +1,14 @@
-using System;
-using System.IO;
 using System.Drawing;
 using System.Windows;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 using Size = System.Drawing.Size;
 
-namespace Rectrans.Extensions;
+namespace Rectrans.OCR;
 
-public static class Dpi
+internal static class Dpi
 {
-    public static Bitmap Screenshot(double x, double y, double height, double width)
+    public static Bitmap CreateBitmapWithActualScreen(double x, double y, double height, double width)
     {
         var factor = GetScreenScalingFactor();
         var ix = (int) (x * factor);
@@ -20,7 +18,6 @@ public static class Dpi
 
         var bitmap = new Bitmap(iw, ih);
         using var graphics = Graphics.FromImage(bitmap);
-        using var stream = new MemoryStream();
         graphics.CopyFromScreen(ix, iy, 0, 0, new Size(iw, ih));
         return bitmap;
     }
