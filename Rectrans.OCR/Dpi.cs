@@ -22,6 +22,8 @@ internal static class Dpi
         return bitmap;
     }
 
+    public static int FontSize(double x, double y, int textCount) => (int) Math.Ceiling(x * y);
+
     private static double GetScreenScalingFactor()
     {
         var desktop = GetDC(IntPtr.Zero);

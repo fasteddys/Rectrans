@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rectrans.OCR", "Rectrans.OC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rectrans.Interpreter", "Rectrans.Interpreter\Rectrans.Interpreter.csproj", "{4E7FF5C1-6D79-4C10-A7FE-D493595FE238}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rectrans.Templates", "Rectrans.Templates\Rectrans.Templates.csproj", "{291F8EE0-B516-4B37-B36F-26E4CEA3FF95}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rectrans.Mvvm", "Rectrans.Mvvm\Rectrans.Mvvm.csproj", "{B8207CD1-3E6A-4D7C-BDA8-E6023CCB335D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{4E7FF5C1-6D79-4C10-A7FE-D493595FE238}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E7FF5C1-6D79-4C10-A7FE-D493595FE238}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E7FF5C1-6D79-4C10-A7FE-D493595FE238}.Release|Any CPU.Build.0 = Release|Any CPU
+		{291F8EE0-B516-4B37-B36F-26E4CEA3FF95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{291F8EE0-B516-4B37-B36F-26E4CEA3FF95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{291F8EE0-B516-4B37-B36F-26E4CEA3FF95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{291F8EE0-B516-4B37-B36F-26E4CEA3FF95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8207CD1-3E6A-4D7C-BDA8-E6023CCB335D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8207CD1-3E6A-4D7C-BDA8-E6023CCB335D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8207CD1-3E6A-4D7C-BDA8-E6023CCB335D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8207CD1-3E6A-4D7C-BDA8-E6023CCB335D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

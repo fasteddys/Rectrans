@@ -1,21 +1,20 @@
-using System;
 using System.Composition;
 using System.Diagnostics;
-using System.Threading;
 using System.Windows.Threading;
 
-namespace Rectrans.Interfaces.Implement;
+namespace Rectrans.Mvvm.Common;
 
 [Export(typeof(IContext))]
-public class WpfContext : IContext
+// ReSharper disable once InconsistentNaming
+public class WPFContext : IContext
 {
     private readonly Dispatcher _dispatcher;
 
-    public WpfContext() : this(Dispatcher.CurrentDispatcher)
+    public WPFContext() : this(Dispatcher.CurrentDispatcher)
     {
     }
 
-    public WpfContext(Dispatcher dispatcher)
+    public WPFContext(Dispatcher dispatcher)
     {
         Debug.Assert(dispatcher != null);
         _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));

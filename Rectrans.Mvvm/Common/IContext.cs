@@ -1,6 +1,4 @@
-using System;
-
-namespace Rectrans.Interfaces;
+namespace Rectrans.Mvvm.Common;
 
 public interface IContext
 {

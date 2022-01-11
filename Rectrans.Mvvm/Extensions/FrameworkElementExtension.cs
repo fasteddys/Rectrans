@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 
-namespace Rectrans.Extensions
+namespace Rectrans.Mvvm.Extensions
 {
-    internal static class FrameworkElementExtension
+    public static class FrameworkElementExtension
     {
         public static T? GetTemplatedParent<T>(this FrameworkElement o)
             where T : DependencyObject

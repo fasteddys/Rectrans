@@ -3,35 +3,41 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="clr-namespace:Rectrans.Views.Controls"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:viewModels="clr-namespace:Rectrans.ViewModels"
-        mc:Ignorable="d"
-        Height="200" Width="500"
-        Opacity="{Binding Opacity}"
-        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource WindowSolidColorBrush}"
         Style="{StaticResource WindowStyle.Rect}"
-        WindowChrome.WindowChrome="{DynamicResource WindowChrome}"
-        Title="翻译区域">
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Opacity="0.6"
+        Height="200" Width="500"
+        Title="翻译框">
 
     <Window.DataContext>
         <viewModels:RectangleViewModel />
     </Window.DataContext>
 
-    <Window.Resources>
-        <WindowChrome x:Key="WindowChrome">
-            <WindowChrome.ResizeBorderThickness>
-                <Thickness>10</Thickness>
-            </WindowChrome.ResizeBorderThickness>
-        </WindowChrome>
-    </Window.Resources>
-
-    <Grid>
-        <Border Height="30" VerticalAlignment="Top" Background="Aqua">
-            <StackPanel Orientation="Horizontal">
-                <Button Height="20" Content="开始翻译"></Button>
-                <Button Height="20" Content="开始翻译"></Button>
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Height="30" Background="Moccasin">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="20 0">
+                <StackPanel.Resources>
+                    <system:Double x:Key="BorderWidth">50</system:Double>
+                    <system:Double x:Key="BorderHeight">20</system:Double>
+                    <system:Double x:Key="BorderFontSize">8</system:Double>
+                </StackPanel.Resources>
+                <!-- <ToggleButton ToolTip="自动翻译开关，切换自动翻译模式" Margin="50 0" /> -->
+                <Button
+                    Width="{StaticResource BorderWidth}"
+                    Height="{StaticResource BorderHeight}"
+                    FontSize="{StaticResource BorderFontSize}"
+                    ToolTip="翻译按钮，点击执行翻译"
+                    Content="翻译" />
             </StackPanel>
         </Border>
-        <controls:MessageBorder VerticalAlignment="Bottom" />
-    </Grid>
+        <Grid DockPanel.Dock="Top">
+            <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis">
+                The text recognition is performed by setting a rectangular area, and the recognized text is translated. No need for hook, basically suitable for all types of game text translation.
+            </TextBlock>
+        </Grid>
+    </DockPanel>
 </Window>
