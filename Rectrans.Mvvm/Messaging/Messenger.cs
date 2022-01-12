@@ -66,7 +66,7 @@ namespace Rectrans.Mvvm.Messaging
                 {
                     if (_recipientsOfSubclassesAction == null)
                     {
-                        _recipientsOfSubclassesAction = new();
+                        _recipientsOfSubclassesAction = new Dictionary<Type, List<WeakActionAndToken>>();
                     }
 
                     recipients = _recipientsOfSubclassesAction;
@@ -75,7 +75,7 @@ namespace Rectrans.Mvvm.Messaging
                 {
                     if (_recipientsStrictAction == null)
                     {
-                        _recipientsStrictAction = new();
+                        _recipientsStrictAction = new Dictionary<Type, List<WeakActionAndToken>>();
                     }
 
                     recipients = _recipientsStrictAction;
@@ -219,7 +219,7 @@ namespace Rectrans.Mvvm.Messaging
             {
                 // 克隆防止人们以“接收消息”方式注册
                 var list = weakActionAndTokens.ToList();
-                var listClone = list.Take(list.Count()).ToList();
+                var listClone = list.Take(list.Count).ToList();
 
                 foreach (var item in listClone)
                 {
@@ -334,7 +334,7 @@ namespace Rectrans.Mvvm.Messaging
             {
                 // 克隆防止人们以“接收消息”方式注册
                 var listClone = _recipientsOfSubclassesAction.Keys
-                    .Take(_recipientsOfSubclassesAction.Count()).ToList();
+                    .Take(_recipientsOfSubclassesAction.Count).ToList();
 
                 foreach (var type in listClone)
                 {
@@ -347,7 +347,7 @@ namespace Rectrans.Mvvm.Messaging
                         lock (_recipientsOfSubclassesAction)
                         {
                             list = _recipientsOfSubclassesAction[type]
-                                .Take(_recipientsOfSubclassesAction[type].Count()).ToList();
+                                .Take(_recipientsOfSubclassesAction[type].Count).ToList();
                         }
                     }
 
@@ -364,7 +364,7 @@ namespace Rectrans.Mvvm.Messaging
                     if (_recipientsStrictAction.ContainsKey(messageType))
                     {
                         list = _recipientsStrictAction[messageType]
-                            .Take(_recipientsStrictAction[messageType].Count()).ToList();
+                            .Take(_recipientsStrictAction[messageType].Count).ToList();
                     }
                 }
 

@@ -1,6 +1,7 @@
 ﻿using System.Composition;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Composition.Hosting;
 using System.Runtime.CompilerServices;
 
 namespace Rectrans.Mvvm.Common
@@ -13,6 +14,15 @@ namespace Rectrans.Mvvm.Common
 
         protected ViewModelBase()
         {
+            ContainerConfiguration();
+        }
+        
+        private void ContainerConfiguration()
+        {
+            var container = new ContainerConfiguration()
+                .WithAssembly(typeof(IContext).Assembly)
+                .CreateContainer();
+            container.SatisfyImports(this);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

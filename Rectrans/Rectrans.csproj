@@ -13,6 +13,7 @@
         <ProjectReference Include="..\Rectrans.Interpreter\Rectrans.Interpreter.csproj" />
         <ProjectReference Include="..\Rectrans.Mvvm\Rectrans.Mvvm.csproj" />
         <ProjectReference Include="..\Rectrans.OCR\Rectrans.OCR.csproj" />
+        <ProjectReference Include="..\Rectrans.Themes\Rectrans.Themes.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -20,10 +21,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="MahApps.Metro" Version="2.4.9" />
         <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
         <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
-        <PackageReference Include="System.Composition.AttributedModel" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     </ItemGroup>
 
     <ItemGroup>

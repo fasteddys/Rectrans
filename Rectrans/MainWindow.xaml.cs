@@ -17,44 +17,44 @@ namespace Rectrans
         {
             InitializeComponent();
             MouseLeftButtonDown += delegate { DragMove(); };
-            var rectangleView = new RectangleView();
+            var importWindow = new ImportWindow();
             ViewModel = new MainViewModel();
 
-            OnRectangleViewCreated(rectangleView);
-            ViewModel.RectangleViewCreated += delegate(object? _, RectangleViewCreatedEventArgs args)
+            OnImportWindowCreated(importWindow);
+            ViewModel.ImportWindowCreated += delegate(object? _, ImportWindowCreatedEventArgs args)
             {
-                OnRectangleViewCreated(args.RectangleView);
+                OnImportWindowCreated(args.ImportWindow);
             };
             DataContext = ViewModel;
 
-            rectangleView.Show();
+            importWindow.Show();
         }
 
-        private void OnRectangleViewCreated(RectangleView rectangleView)
+        private void OnImportWindowCreated(ImportWindow importWindow)
         {
-            Closed += delegate { rectangleView.Close(); };
+            Closed += delegate { importWindow.Close(); };
             StateChanged += delegate
             {
                 if (WindowState != WindowState.Maximized)
                 {
-                    rectangleView.WindowState = WindowState;
+                    importWindow.WindowState = WindowState;
                 }
             };
 
-            rectangleView.Closed += delegate
+            importWindow.Closed += delegate
             {
                 if (IsLoaded)
                 {
-                    ViewModel.OnRectangleViewAbnormalClosed();
+                    ViewModel.OnImportWindowAbnormalClosed();
                 }
             };
 
-            rectangleView.LayoutUpdated += delegate
+            importWindow.LayoutUpdated += delegate
             {
-                ViewModel.X = (int) rectangleView.Left;
-                ViewModel.Y = (int) rectangleView.Top;
-                ViewModel.Height = (int) rectangleView.Height;
-                ViewModel.Width = (int) rectangleView.Width;
+                ViewModel.X = (int) importWindow.Left;
+                ViewModel.Y = (int) importWindow.Top;
+                ViewModel.Height = (int) importWindow.Height;
+                ViewModel.Width = (int) importWindow.Width;
             };
         }
     }

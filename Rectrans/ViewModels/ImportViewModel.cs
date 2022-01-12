@@ -2,9 +2,9 @@ using Rectrans.Mvvm.Common;
 
 namespace Rectrans.ViewModels;
 
-public class RectangleViewModel : ViewModelBase
+public class ImportViewModel : ViewModelBase
 {
-    public RectangleViewModel()
+    public ImportViewModel()
     {
         MessageBorder();
     }

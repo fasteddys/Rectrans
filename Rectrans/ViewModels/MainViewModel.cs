@@ -1,5 +1,4 @@
 ﻿using Rectrans.OCR;
-using Rectrans.Mvvm;
 using Rectrans.Views;
 using Rectrans.Models;
 using Rectrans.Utilities;
@@ -31,7 +30,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             _source = value;
-            OnPropertyChanged(nameof(Source));
+            OnPropertyChanged();
         }
     }
 
@@ -84,7 +83,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             _sourceText = value;
-            OnPropertyChanged(nameof(SourceText));
+            OnPropertyChanged();
         }
     }
 
@@ -96,23 +95,21 @@ public class MainViewModel : ViewModelBase
         set
         {
             _targetText = value;
-            OnPropertyChanged(nameof(TargetText));
+            OnPropertyChanged();
         }
     }
 
     private int _textCount;
 
-    private int TextCount
+    public int TextCount
     {
         get => _textCount;
         set
         {
             _textCount += value;
-            OnPropertyChanged(nameof(StatusBarText));
+            OnPropertyChanged();
         }
     }
-
-    public string StatusBarText => "字数统计(字节): " + TextCount;
 
     private void Translate()
     {
@@ -164,7 +161,7 @@ public class MainViewModel : ViewModelBase
 
     public ICommand ConfirmCommand => _confirmCommand ??= new RelayCommand(_ => Confirm());
 
-    public void OnRectangleViewAbnormalClosed() =>
+    public void OnImportWindowAbnormalClosed() =>
         Messenger.Default.Send<Message>(new()
         {
             MessageType = MessageType.Warning,
@@ -179,18 +176,18 @@ public class MainViewModel : ViewModelBase
     private void OnMessageBorderHyperlinkClick(object? parameter)
     {
         Messenger.Default.Send<Message>(new() {MessageType = MessageType.Close});
-        var rectangleView = new RectangleView();
+        var importWindow = new ImportWindow();
 
-        OnRectangleViewCreated(rectangleView);
+        OnImportWindowCreated(importWindow);
 
-        rectangleView.Show();
+        importWindow.Show();
     }
 
-    public event RectangleViewCreatedEventHandler? RectangleViewCreated;
+    public event ImportWindowCreatedEventHandler? ImportWindowCreated;
 
-    private void OnRectangleViewCreated(RectangleView rectangleView)
+    private void OnImportWindowCreated(ImportWindow importWindow)
     {
-        RectangleViewCreated?.Invoke(this, new RectangleViewCreatedEventArgs(rectangleView));
+        ImportWindowCreated?.Invoke(this, new ImportWindowCreatedEventArgs(importWindow));
     }
 
     public double X { get; set; }

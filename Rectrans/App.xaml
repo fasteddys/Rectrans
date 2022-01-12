@@ -4,28 +4,8 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
-            <Style x:Key="WindowStyle.None" TargetType="{x:Type Window}">
-                <Setter Property="WindowStyle" Value="None" />
-                <Setter Property="AllowsTransparency" Value="True" />
-            </Style>
-            <Style x:Key="WindowStyle.Rect" TargetType="{x:Type Window}" BasedOn="{StaticResource WindowStyle.None}">
-                <Setter Property="Topmost" Value="True" />
-                <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="BorderBrush" Value="Moccasin" />
-                <Setter Property="ResizeMode" Value="CanResize" />
-            </Style>
-            <Style x:Key="WindowStyle.Main" TargetType="{x:Type Window}">
-                <Setter Property="FontFamily" Value="Fonts/#FiraCode Regular" />
-            </Style>
-            <SolidColorBrush x:Key="WindowSolidColorBrush" Opacity="0.2" />
-
             <ResourceDictionary.MergedDictionaries>
-                <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <!-- Theme setting -->
-                <ResourceDictionary
-                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rectrans.Themes;component/XAML/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

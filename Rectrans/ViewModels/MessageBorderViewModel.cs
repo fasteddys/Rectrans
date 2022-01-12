@@ -1,4 +1,3 @@
-using Rectrans.Mvvm;
 using Rectrans.Utilities;
 using Rectrans.Mvvm.Common;
 using System.Windows.Input;

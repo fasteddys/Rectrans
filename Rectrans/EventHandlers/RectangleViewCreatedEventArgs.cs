@@ -1,14 +1,13 @@
-using System;
 using Rectrans.Views;
 
 namespace Rectrans.EventHandlers;
 
-public class RectangleViewCreatedEventArgs : EventArgs
+public class ImportWindowCreatedEventArgs : EventArgs
 {
-    public RectangleViewCreatedEventArgs(RectangleView rectangleView)
+    public ImportWindowCreatedEventArgs(ImportWindow importWindow)
     {
-        RectangleView = rectangleView;
+        ImportWindow = importWindow;
     }
 
-    public RectangleView RectangleView { get; }
+    public ImportWindow ImportWindow { get; }
 }
