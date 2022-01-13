@@ -2,12 +2,12 @@ using Rectrans.Views;
 
 namespace Rectrans.EventHandlers;
 
-public class ImportWindowCreatedEventArgs : EventArgs
+public class InputWindowCreatedEventArgs : EventArgs
 {
-    public ImportWindowCreatedEventArgs(ImportWindow importWindow)
+    public InputWindowCreatedEventArgs(InputWindow inputWindow)
     {
-        ImportWindow = importWindow;
+        InputWindow = inputWindow;
     }
 
-    public ImportWindow ImportWindow { get; }
+    public InputWindow InputWindow { get; }
 }

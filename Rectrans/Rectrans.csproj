@@ -10,9 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Rectrans.Interpreter\Rectrans.Interpreter.csproj" />
-        <ProjectReference Include="..\Rectrans.Mvvm\Rectrans.Mvvm.csproj" />
-        <ProjectReference Include="..\Rectrans.OCR\Rectrans.OCR.csproj" />
+        <ProjectReference Include="..\Rectrans.Infrastructure\Rectrans.Infrastructure.csproj" />
         <ProjectReference Include="..\Rectrans.Themes\Rectrans.Themes.csproj" />
     </ItemGroup>
 
@@ -22,24 +20,13 @@
 
     <ItemGroup>
         <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
-        <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
-        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Content Include="Assets\**">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
+        <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
     </ItemGroup>
 
     <ItemGroup>
         <None Update="appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="Properties\Annotations.cs" />
     </ItemGroup>
 
 </Project>

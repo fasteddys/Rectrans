@@ -1,7 +1,8 @@
 ﻿using System.Windows;
-using Rectrans.Views;
+using System.Windows.Media;
+using Prism.Ioc;
 using Rectrans.ViewModels;
-using Rectrans.EventHandlers;
+using Rectrans.Views;
 
 namespace Rectrans
 {
@@ -10,52 +11,61 @@ namespace Rectrans
     /// </summary>
     public partial class MainWindow
     {
-        // ReSharper disable once InconsistentNaming
-        private readonly MainViewModel ViewModel;
-
-        public MainWindow()
+        public MainWindow(IContainerProvider containerProvider)
         {
             InitializeComponent();
             MouseLeftButtonDown += delegate { DragMove(); };
-            var importWindow = new ImportWindow();
-            ViewModel = new MainViewModel();
 
-            OnImportWindowCreated(importWindow);
-            ViewModel.ImportWindowCreated += delegate(object? _, ImportWindowCreatedEventArgs args)
-            {
-                OnImportWindowCreated(args.ImportWindow);
-            };
-            DataContext = ViewModel;
+            InputWindow = containerProvider.Resolve<InputWindow>();
+            RegisterInputWindowAbnormalClosed();
 
-            importWindow.Show();
+            DataContext = new MainViewModel();
+            InputWindow.Show();
         }
 
-        private void OnImportWindowCreated(ImportWindow importWindow)
-        {
-            Closed += delegate { importWindow.Close(); };
-            StateChanged += delegate
-            {
-                if (WindowState != WindowState.Maximized)
-                {
-                    importWindow.WindowState = WindowState;
-                }
-            };
+        // ReSharper disable once InconsistentNaming
+        private readonly InputWindow InputWindow;
 
-            importWindow.Closed += delegate
+        private void RegisterInputWindowAbnormalClosed()
+        {
+            InputWindow.Closed += (_, _) =>
             {
                 if (IsLoaded)
                 {
-                    ViewModel.OnImportWindowAbnormalClosed();
+                    // Messenger.Default.Send<Message>(new()
+                    // {
+                    //     MessageType = MessageType.Warning,
+                    //     BorderText = @"您已关闭“翻译框”窗口，请点击""重置""按钮进行恢复！",
+                    //     Hyperlink = new()
+                    //     {
+                    //         Text = "重置",
+                    //         Command = new RelayCommand(OnMessageBorderHyperlinkClick)
+                    //     }
+                    // });
+
+                    var viewModel = (MainViewModel) DataContext;
+
+                    viewModel.MessageBackground = AppSettings.GetMessageBorderBackground("Warning");
+                    viewModel.MessageText = @"您已关闭“翻译框”窗口，请点击""重置""按钮进行恢复！";
+                    // viewModel.
+                    
                 }
             };
+        }
 
-            importWindow.LayoutUpdated += delegate
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            InputWindow.Close();
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            base.OnStateChanged(e);
+            if (WindowState != WindowState.Maximized)
             {
-                ViewModel.X = (int) importWindow.Left;
-                ViewModel.Y = (int) importWindow.Top;
-                ViewModel.Height = (int) importWindow.Height;
-                ViewModel.Width = (int) importWindow.Width;
-            };
+                InputWindow.WindowState = WindowState;
+            }
         }
     }
 }

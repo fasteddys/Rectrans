@@ -1,37 +1,26 @@
-﻿using Rectrans.OCR;
-using Rectrans.Views;
+﻿using Rectrans.Views;
 using Rectrans.Models;
-using Rectrans.Utilities;
-using System.Diagnostics;
-using Rectrans.Interpreter;
-using Rectrans.Mvvm.Common;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.ComponentModel;
 using Rectrans.EventHandlers;
-using Rectrans.Mvvm.Messaging;
+using Rectrans.Infrastructure;
 using System.Collections.ObjectModel;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace Rectrans.ViewModels;
 
-public class MainViewModel : ViewModelBase
+public class MainViewModel : MessageViewModel
 {
-    private ObservableCollection<MenuItem>? _source;
+    // ReSharper disable once InconsistentNaming
+    private readonly CollectionViewSource MenuItemsCollection;
 
-    public ObservableCollection<MenuItem> Source
+    public ICollectionView SourceCollection => MenuItemsCollection.View;
+
+    public MainViewModel()
     {
-        get
-        {
-            if (_source == null)
-            {
-                _source = BindingCommand(AppSettings.MenuItems);
-            }
-
-            return _source;
-        }
-        set
-        {
-            _source = value;
-            OnPropertyChanged();
-        }
+        MenuItemsCollection = new() {Source = BindingCommand(MenuItem.DefaultCollection)};
     }
 
     private ObservableCollection<MenuItem> BindingCommand(IEnumerable<MenuItem> source)
@@ -51,21 +40,22 @@ public class MainViewModel : ViewModelBase
         return new ObservableCollection<MenuItem>(items);
     }
 
-    private void MenuSelected(object? parameter)
+    private void MenuSelected(MenuItem? parameter)
     {
-        var current = parameter as MenuItem;
-        var parent = current!.Parent;
-        if (parent == null) return;
+        if (parameter?.GroupName == null) return;
 
-        foreach (var item in parent.ItemsSource!)
+        foreach (var item in ((ObservableCollection<MenuItem>) MenuItemsCollection.Source).FindItems(x =>
+                     x.GroupName == parameter.GroupName)!)
         {
-            if (item != current)
+            if (item != parameter)
             {
                 item.IsChecked = false;
             }
         }
 
-        if (current.Key != "Stop" || _timer == null) return;
+        MenuItemsCollection.View.Refresh();
+
+        if (parameter.Key != "Stop" || _timer == null) return;
         _timer.Dispose();
         _timer = null;
     }
@@ -73,7 +63,7 @@ public class MainViewModel : ViewModelBase
     private ICommand? _menuCommand;
 
     // ReSharper disable once MemberCanBePrivate.Global
-    public ICommand MenuCommand => _menuCommand ??= new RelayCommand(MenuSelected);
+    public ICommand MenuCommand => _menuCommand ??= new DelegateCommand<MenuItem>(MenuSelected);
 
     private string? _sourceText;
 
@@ -83,7 +73,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             _sourceText = value;
-            OnPropertyChanged();
+            RaisePropertyChanged();
         }
     }
 
@@ -95,7 +85,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             _targetText = value;
-            OnPropertyChanged();
+            RaisePropertyChanged();
         }
     }
 
@@ -107,7 +97,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             _textCount += value;
-            OnPropertyChanged();
+            RaisePropertyChanged();
         }
     }
 
@@ -119,23 +109,17 @@ public class MainViewModel : ViewModelBase
             return;
         }
 
-        Context.BeginInvoke(async () =>
+        System.Windows.Application.Current.Dispatcher.BeginInvoke(async () =>
         {
-            var source = Source.FindItem(x => x.Parent?.Key == "Source" && x.IsChecked)?.Key;
-            var target = Source.FindItem(x => x.Parent?.Key == "Target" && x.IsChecked)?.Key;
+            var source = (string) ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
+                .FindItem(x => x.GroupName == "源语言" && x.IsChecked)!.Extra!;
 
-            if (target == null || source == null) Debugger.Break();
+            var target = (string) ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
+                .FindItem(x => x.GroupName == "目标语言" && x.IsChecked)!.Extra!;
 
-            var sourceText = Identify.FromScreen(X, Y, Height, Width, AppSettings.TrainedData(source));
+            (SourceText, TargetText) = await ImageTranslate.TranslateAsync(X, Y, Height, Width, source, target);
 
-            // if the sourceText not change, return
-            if (sourceText == SourceText) return;
-
-            SourceText = sourceText;
-            TargetText = await Interpret.WithGoogleAsync(sourceText, AppSettings.ISO_639_1(target),
-                AppSettings.ISO_639_1(source));
-
-            TextCount = sourceText.Length;
+            TextCount = SourceText.Length;
         });
     }
 
@@ -143,12 +127,14 @@ public class MainViewModel : ViewModelBase
 
     private void Confirm()
     {
-        var menuItem = Source.FindItem(x => x.Parent?.Key == "AutomaticTranslation" && x.IsChecked);
-        if (menuItem != null)
+        var item = ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
+            .FindItem(x => x.GroupName == "自动翻译" && x.IsChecked);
+
+        if (item != null)
         {
             _timer ??= new System.Timers.Timer();
 
-            _timer.Interval = Convert.ToInt16(menuItem.Extra!);
+            _timer.Interval = Convert.ToInt16(item.Extra!);
             _timer.Elapsed += (_, _) => { Translate(); };
 
             _timer.Start();
@@ -159,35 +145,37 @@ public class MainViewModel : ViewModelBase
 
     private ICommand? _confirmCommand;
 
-    public ICommand ConfirmCommand => _confirmCommand ??= new RelayCommand(_ => Confirm());
+    public ICommand ConfirmCommand => _confirmCommand ??= new DelegateCommand(Confirm);
 
-    public void OnImportWindowAbnormalClosed() =>
-        Messenger.Default.Send<Message>(new()
-        {
-            MessageType = MessageType.Warning,
-            BorderText = @"您已关闭“翻译框”窗口，请点击""重置""按钮进行恢复！",
-            Hyperlink = new()
-            {
-                Text = "重置",
-                Command = new RelayCommand(OnMessageBorderHyperlinkClick)
-            }
-        });
+    // public void OnInputWindowAbnormalClosed() =>
+    //     Messenger.Default.Send<Message>(new()
+    //     {
+    //         MessageType = MessageType.Warning,
+    //         BorderText = @"您已关闭“翻译框”窗口，请点击""重置""按钮进行恢复！",
+    //         Hyperlink = new()
+    //         {
+    //             Text = "重置",
+    //             Command = new RelayCommand(OnMessageBorderHyperlinkClick)
+    //         }
+    //     });
+    
+    
 
-    private void OnMessageBorderHyperlinkClick(object? parameter)
+    // private void OnMessageBorderHyperlinkClick(object? parameter)
+    // {
+    //     Messenger.Default.Send<Message>(new() {MessageType = MessageType.Close});
+    //     var inputWindow = new InputWindow();
+    //
+    //     OnInputWindowCreated(inputWindow);
+    //
+    //     inputWindow.Show();
+    // }
+
+    public event InputWindowCreatedEventHandler? InputWindowCreated;
+
+    private void OnInputWindowCreated(InputWindow inputWindow)
     {
-        Messenger.Default.Send<Message>(new() {MessageType = MessageType.Close});
-        var importWindow = new ImportWindow();
-
-        OnImportWindowCreated(importWindow);
-
-        importWindow.Show();
-    }
-
-    public event ImportWindowCreatedEventHandler? ImportWindowCreated;
-
-    private void OnImportWindowCreated(ImportWindow importWindow)
-    {
-        ImportWindowCreated?.Invoke(this, new ImportWindowCreatedEventArgs(importWindow));
+        InputWindowCreated?.Invoke(this, new InputWindowCreatedEventArgs(inputWindow));
     }
 
     public double X { get; set; }

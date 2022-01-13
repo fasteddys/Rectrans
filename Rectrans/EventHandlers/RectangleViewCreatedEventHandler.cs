@@ -1,3 +1,3 @@
 namespace Rectrans.EventHandlers;
 
-public delegate void ImportWindowCreatedEventHandler(object? sender, ImportWindowCreatedEventArgs e);
+public delegate void InputWindowCreatedEventHandler(object? sender, InputWindowCreatedEventArgs e);

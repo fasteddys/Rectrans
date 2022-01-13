@@ -2,13 +2,66 @@
 using System.Collections;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
+
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Rectrans.Models;
 
-
 public class MenuItem
 {
+    public static readonly ObservableCollection<MenuItem> DefaultCollection = new()
+    {
+        new()
+        {
+            Key = "Language", Header = "语言", ItemsSource = new()
+            {
+                new()
+                {
+                    Key = "Source", Header = "源语言", GroupName = "语言", ItemsSource = new()
+                    {
+                        new()
+                        {
+                            Key = "English", Header = "英语", GroupName = "源语言", IsCheckable = true, IsChecked = true,
+                            Extra = "en"
+                        },
+                        new() {Key = "Japanese", Header = "日语", GroupName = "源语言", IsCheckable = true, Extra = "ja"},
+                        new() {Key = "Korean", Header = "韩语", GroupName = "源语言", IsCheckable = true, Extra = "ko"},
+                        new()
+                        {
+                            Key = "ChineseSimplified", Header = "简体中文", GroupName = "源语言", IsCheckable = true,
+                            Extra = "zh"
+                        },
+                    }
+                },
+                new()
+                {
+                    Key = "Target", Header = "目标语言", GroupName = "语言", ItemsSource = new()
+                    {
+                        new()
+                        {
+                            Key = "ChineseSimplified", Header = "简体中文", GroupName = "目标语言", IsCheckable = true,
+                            IsChecked = true, Extra = "zh"
+                        },
+                        new() {Key = "English", Header = "英语", GroupName = "目标语言", IsCheckable = true, Extra = "en"},
+                        new() {Key = "Japanese", Header = "日语", GroupName = "目标语言", IsCheckable = true, Extra = "ja"},
+                        new() {Key = "Korean", Header = "韩语", GroupName = "目标语言", IsCheckable = true, Extra = "ko"},
+                    }
+                },
+            }
+        },
+        new()
+        {
+            Key = "AutomaticTranslation", Header = "自动翻译", ItemsSource = new()
+            {
+                new() {Header = "停止", GroupName = "自动翻译"},
+                new() {Header = "2s", GroupName = "自动翻译", IsCheckable = true, Extra = 2000},
+                new() {Header = "4s", GroupName = "自动翻译", IsCheckable = true, Extra = 4000},
+                new() {Header = "8s", GroupName = "自动翻译", IsCheckable = true, Extra = 8000},
+                new() {Header = "12s", GroupName = "自动翻译", IsCheckable = true, Extra = 12000},
+            }
+        }
+    };
+
     public string Key { get; set; } = null!;
 
     public string Header { get; set; } = null!;
@@ -17,39 +70,17 @@ public class MenuItem
 
     public bool IsChecked { get; set; }
 
-    // ReSharper disable once InconsistentNaming
-    public string? ISO_639_1 { get; set; }
-
-    public string? TrainedData { get; set; }
-
-    public string? Description { get; set; }
-
-    public MenuItem? Parent { get; set; }
+    public string? GroupName { get; set; }
 
     public ICommand? Command { get; set; }
 
     public object? CommandParameter { get; set; }
 
-    public object? Extra { get; set; }
-
     public bool HasItems => ItemsSource != null && ItemsSource.Any();
 
-    private ObservableCollection<MenuItem>? _itemsSource;
+    public ObservableCollection<MenuItem>? ItemsSource { get; set; }
 
-    public ObservableCollection<MenuItem>? ItemsSource
-    {
-        get => _itemsSource;
-
-        set
-        {
-            _itemsSource = value;
-            if (ItemsSource == null) return;
-            foreach (var item in ItemsSource)
-            {
-                item.Parent = this;
-            }
-        }
-    }
+    public object? Extra { get; set; }
 }
 
 public class MenuItemConverter : JsonConverter
@@ -96,5 +127,24 @@ public static class MenuItemExtension
         }
 
         return null;
+    }
+
+    public static IEnumerable<MenuItem>? FindItems(this IEnumerable<MenuItem> source,
+        Func<MenuItem, bool> predicate)
+    {
+        var items = source as MenuItem[] ?? source.ToArray();
+
+        var result = items.Where(predicate).ToArray();
+
+        foreach (var item in items.Select(x => x.ItemsSource))
+        {
+            var childResult = item?.FindItems(predicate);
+            if (childResult != null)
+            {
+                result = result?.Concat(childResult).ToArray();
+            }
+        }
+
+        return result;
     }
 }

@@ -15,11 +15,11 @@
       <FileName>ViewModel\MainViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rectrans.ViewModel.ImportWindowModel">
+  <Class Name="Rectrans.ViewModel.InputWindowModel">
     <Position X="6.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ViewModel\ImportWindowModel.cs</FileName>
+      <FileName>ViewModel\InputWindowModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Rectrans.ViewModel.MessageBorderMonitor">
