@@ -1,8 +1,11 @@
+using Prism.Commands;
 using Prism.Mvvm;
+using System.Windows.Input;
+using ToastNotifications.Messages;
 
 namespace Rectrans.ViewModels;
 
-public class InputViewModel : MessageViewModel
+public class InputViewModel : BindableBase
 {
     public InputViewModel()
     {
@@ -19,5 +22,7 @@ public class InputViewModel : MessageViewModel
             RaisePropertyChanged();
         }
     }
+
+    public ICommand TranslateCommand => new DelegateCommand(() => { });
 
 }

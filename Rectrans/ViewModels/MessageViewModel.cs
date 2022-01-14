@@ -1,18 +1,36 @@
 ﻿using Prism.Mvvm;
 using System.Windows;
+using Prism.Commands;
 using System.Windows.Input;
 using System.Windows.Media;
-using Prism.Commands;
 
 namespace Rectrans.ViewModels;
 
 public abstract class MessageViewModel : BindableBase
 {
+    private void Reset()
+    {
+        _messageFontWeight = null;
+
+        _messageText = null;
+        _messageHyperlinkText = null;
+
+        _messageHyperlinkCommand = null;
+        _messageCloseButtonCommand = null;
+
+        _messageBackground = null;
+        _messageHyperlinkColor = null;
+        _messageCloseButtonColor = null;
+
+        _showMessage = false;
+        _showMessageCloseButton = false;
+    }
+
     private FontWeight? _messageFontWeight;
 
-    public FontWeight? MessageFontWeight
+    public FontWeight MessageFontWeight
     {
-        get => _messageFontWeight;
+        get => _messageFontWeight ??= FontWeights.Normal;
         set
         {
             _messageFontWeight = value;
@@ -29,22 +47,15 @@ public abstract class MessageViewModel : BindableBase
         get => _showMessage;
         set
         {
+            if (!value) Reset();
+
             _showMessage = value;
             RaisePropertyChanged();
+            RaisePropertyChanged(nameof(ShowMessageHyperlink));
         }
     }
 
-    private bool _showMessageHyperlink;
-
-    public bool ShowMessageHyperlink
-    {
-        get => _showMessageHyperlink;
-        set
-        {
-            _showMessageHyperlink = value;
-            RaisePropertyChanged();
-        }
-    }
+    public bool ShowMessageHyperlink => _messageHyperlinkText != null;
 
     private bool _showMessageCloseButton;
 
@@ -64,9 +75,9 @@ public abstract class MessageViewModel : BindableBase
 
     private string? _messageText;
 
-    public string? MessageText
+    public string MessageText
     {
-        get => _messageText;
+        get => _messageText ??= string.Empty;
         set
         {
             _messageText = value;
@@ -78,7 +89,7 @@ public abstract class MessageViewModel : BindableBase
 
     public string? MessageHyperlinkText
     {
-        get => _messageHyperlinkText;
+        get => _messageHyperlinkText ??= string.Empty;
         set
         {
             _messageHyperlinkText = value;
@@ -92,9 +103,9 @@ public abstract class MessageViewModel : BindableBase
 
     private Brush? _messageBackground;
 
-    public Brush? MessageBackground
+    public Brush MessageBackground
     {
-        get => _messageBackground;
+        get => _messageBackground ??= Brushes.Black;
         set
         {
             _messageBackground = value;
@@ -104,9 +115,9 @@ public abstract class MessageViewModel : BindableBase
 
     private Brush? _messageHyperlinkColor;
 
-    public Brush? MessageHyperlinkColor
+    public Brush MessageHyperlinkColor
     {
-        get => _messageHyperlinkColor;
+        get => _messageHyperlinkColor ??= Brushes.Black;
         set
         {
             _messageHyperlinkColor = value;
@@ -116,9 +127,9 @@ public abstract class MessageViewModel : BindableBase
 
     private Brush? _messageCloseButtonColor;
 
-    public Brush? MessageCloseButtonColor
+    public Brush MessageCloseButtonColor
     {
-        get => _messageCloseButtonColor;
+        get => _messageCloseButtonColor ??= Brushes.Black;
         set
         {
             _messageCloseButtonColor = value;
@@ -130,16 +141,29 @@ public abstract class MessageViewModel : BindableBase
 
     #region Commands
 
-    public virtual ICommand? MessageHyperlinkCommand =>
-        MessageHyperlinkText == null ? null : throw new NotImplementedException();
+    private ICommand? _messageHyperlinkCommand;
 
+    public virtual ICommand? MessageHyperlinkCommand
+    {
+        get => _messageHyperlinkCommand ??= new DelegateCommand(() => { });
+        set
+        {
+            _messageHyperlinkCommand = value;
+            RaisePropertyChanged();
+        }
+    }
 
     private ICommand? _messageCloseButtonCommand;
 
-    public virtual ICommand MessageCloseButtonCommand => _messageCloseButtonCommand ??= new DelegateCommand(() =>
+    public virtual ICommand MessageCloseButtonCommand
     {
-        ShowMessage = false;
-    });
+        get => _messageCloseButtonCommand ??= new DelegateCommand(() => ShowMessage = false);
+        set
+        {
+            _messageCloseButtonCommand = value;
+            RaisePropertyChanged();
+        }
+    }
 
     #endregion
 }

@@ -29,6 +29,7 @@
                         VerticalAlignment="Center"
                         Style="{DynamicResource PrimaryButtonStyle}"
                         ToolTip="点击执行翻译"
+                        Command="{Binding TranslateCommand}"
                         Content="翻译"
                         Margin="15 2" />
 

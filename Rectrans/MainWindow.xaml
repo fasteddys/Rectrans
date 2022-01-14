@@ -4,17 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        xmlns:viewModels="clr-namespace:Rectrans.ViewModels"
-        xmlns:controls="clr-namespace:Rectrans.Themes.Controls;assembly=Rectrans.Themes"
         Topmost="{Binding ElementName=ToMostButton, Path= IsChecked}"
         Title="Rectrans 机翻" Height="450" Width="800"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResizeWithGrip"
         mc:Ignorable="d">
-
-    <Window.DataContext>
-        <viewModels:MainViewModel />
-    </Window.DataContext>
 
 
     <DockPanel>
@@ -71,19 +65,6 @@
                 <TextBlock Text="{Binding TextCount}" />
             </StackPanel>
         </StatusBar>
-
-        <controls:MessageBorder DockPanel.Dock="Bottom"
-                                Height="30"
-                                FontWeight="{Binding MessageFontWeight}"
-                                Background="{Binding MessageBackground}"
-                                HyperlinkColor="{Binding MessageHyperlinkColor}"
-                                CloseButtonColor="{Binding MessageCloseButtonColor}"
-                                ShowMessage="{Binding ShowMessage}"
-                                ShowCloseButton="{Binding ShowMessageCloseButton}"
-                                ShowHyperlink="{Binding ShowMessageHyperlink}"
-                                MessageText="{Binding MessageText}"
-                                HyperlinkText="{Binding MessageHyperlinkText}"
-                                Style="{DynamicResource MessageBorderStyle}" />
 
         <Grid Margin="20" DockPanel.Dock="Top">
             <Grid.RowDefinitions>

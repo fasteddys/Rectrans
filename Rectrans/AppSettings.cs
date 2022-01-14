@@ -9,7 +9,7 @@ public static class AppSettings
     internal static Brush GetMessageBorderBackground(string key)
     {
         if (key is null) throw KeyNullException(key);
-        var str = GetJObject(MessageBorderJToken, key)?["Background"]?.Value<string>();
+        var str = GetJObject(MessageBorderJToken, key)?["Background"]?.Value<string>()!;
         return (Brush)new BrushConverter().ConvertFromString(str)!;
     }
 

@@ -1,17 +1,15 @@
-﻿using Rectrans.Views;
+﻿using Prism.Commands;
 using Rectrans.Models;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.ComponentModel;
-using Rectrans.EventHandlers;
 using Rectrans.Infrastructure;
 using System.Collections.ObjectModel;
-using Prism.Commands;
 using Prism.Mvvm;
 
 namespace Rectrans.ViewModels;
 
-public class MainViewModel : MessageViewModel
+public class MainViewModel : BindableBase
 {
     // ReSharper disable once InconsistentNaming
     private readonly CollectionViewSource MenuItemsCollection;
@@ -42,10 +40,10 @@ public class MainViewModel : MessageViewModel
 
     private void MenuSelected(MenuItem? parameter)
     {
-        if (parameter?.GroupName == null) return;
+        if (parameter?.Group == null) return;
 
         foreach (var item in ((ObservableCollection<MenuItem>) MenuItemsCollection.Source).FindItems(x =>
-                     x.GroupName == parameter.GroupName)!)
+                     x.Group == parameter.Group)!)
         {
             if (item != parameter)
             {
@@ -60,10 +58,53 @@ public class MainViewModel : MessageViewModel
         _timer = null;
     }
 
-    private ICommand? _menuCommand;
+    internal WindowSize InputWindowSize { get; set; } = null!;
+    internal WindowLocation InputWindowLocation { get; set; } = null!;
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    public ICommand MenuCommand => _menuCommand ??= new DelegateCommand<MenuItem>(MenuSelected);
+    private void Translate()
+    {
+        if (InputWindowSize.Width == 0 || InputWindowSize.Height == 0)
+        {
+            // future: add message box
+            return;
+        }
+
+        System.Windows.Application.Current.Dispatcher.BeginInvoke(async () =>
+        {
+            var source = (string) ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
+                .FindItem(x => x.Group == Group.SourceLan && x.IsChecked)!.Extra!;
+
+            var target = (string) ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
+                .FindItem(x => x.Group == Group.TargetLan && x.IsChecked)!.Extra!;
+
+            (SourceText, TargetText) = await ImageTranslate.TranslateAsync(InputWindowLocation.Left,
+                InputWindowLocation.Top, InputWindowSize.Height, InputWindowSize.Width, source, target);
+
+            TextCount = SourceText.Length;
+        });
+    }
+
+    private static System.Timers.Timer? _timer;
+
+    private void Confirm()
+    {
+        var item = ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
+            .FindItem(x => x.Group == Group.AntoTranslate && x.IsChecked);
+
+        if (item != null)
+        {
+            _timer ??= new System.Timers.Timer();
+
+            _timer.Interval = Convert.ToInt16(item.Extra!);
+            _timer.Elapsed += (_, _) => { Translate(); };
+
+            _timer.Start();
+        }
+
+        Translate();
+    }
+
+    #region UIBinding
 
     private string? _sourceText;
 
@@ -101,85 +142,14 @@ public class MainViewModel : MessageViewModel
         }
     }
 
-    private void Translate()
-    {
-        if (Width == 0 || Height == 0)
-        {
-            // future: add message box
-            return;
-        }
-
-        System.Windows.Application.Current.Dispatcher.BeginInvoke(async () =>
-        {
-            var source = (string) ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
-                .FindItem(x => x.GroupName == "源语言" && x.IsChecked)!.Extra!;
-
-            var target = (string) ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
-                .FindItem(x => x.GroupName == "目标语言" && x.IsChecked)!.Extra!;
-
-            (SourceText, TargetText) = await ImageTranslate.TranslateAsync(X, Y, Height, Width, source, target);
-
-            TextCount = SourceText.Length;
-        });
-    }
-
-    private System.Timers.Timer? _timer;
-
-    private void Confirm()
-    {
-        var item = ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
-            .FindItem(x => x.GroupName == "自动翻译" && x.IsChecked);
-
-        if (item != null)
-        {
-            _timer ??= new System.Timers.Timer();
-
-            _timer.Interval = Convert.ToInt16(item.Extra!);
-            _timer.Elapsed += (_, _) => { Translate(); };
-
-            _timer.Start();
-        }
-
-        Translate();
-    }
-
     private ICommand? _confirmCommand;
 
     public ICommand ConfirmCommand => _confirmCommand ??= new DelegateCommand(Confirm);
 
-    // public void OnInputWindowAbnormalClosed() =>
-    //     Messenger.Default.Send<Message>(new()
-    //     {
-    //         MessageType = MessageType.Warning,
-    //         BorderText = @"您已关闭“翻译框”窗口，请点击""重置""按钮进行恢复！",
-    //         Hyperlink = new()
-    //         {
-    //             Text = "重置",
-    //             Command = new RelayCommand(OnMessageBorderHyperlinkClick)
-    //         }
-    //     });
-    
-    
+    private ICommand? _menuCommand;
 
-    // private void OnMessageBorderHyperlinkClick(object? parameter)
-    // {
-    //     Messenger.Default.Send<Message>(new() {MessageType = MessageType.Close});
-    //     var inputWindow = new InputWindow();
-    //
-    //     OnInputWindowCreated(inputWindow);
-    //
-    //     inputWindow.Show();
-    // }
+    // ReSharper disable once MemberCanBePrivate.Global
+    public ICommand MenuCommand => _menuCommand ??= new DelegateCommand<MenuItem>(MenuSelected);
 
-    public event InputWindowCreatedEventHandler? InputWindowCreated;
-
-    private void OnInputWindowCreated(InputWindow inputWindow)
-    {
-        InputWindowCreated?.Invoke(this, new InputWindowCreatedEventArgs(inputWindow));
-    }
-
-    public double X { get; set; }
-    public double Y { get; set; }
-    public double Width { get; set; }
-    public double Height { get; set; }
+    #endregion
 }

@@ -6,8 +6,10 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Rectrans.Themes;component/XAML/Styles/Styles.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Rectrans.Themes;component/XAML/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rectrans.UI;component/Themes/Styles.xaml" />
+                
+                <!-- ToastNotifications -->
+                <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

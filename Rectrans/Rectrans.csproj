@@ -11,7 +11,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Rectrans.Infrastructure\Rectrans.Infrastructure.csproj" />
-        <ProjectReference Include="..\Rectrans.Themes\Rectrans.Themes.csproj" />
+        <ProjectReference Include="..\Rectrans.UI\Rectrans.UI.csproj" />
+        <ProjectReference Include="..\ToastNotifications.Messages\ToastNotifications.Messages.csproj" />
+        <ProjectReference Include="..\ToastNotifications\ToastNotifications.csproj" />
     </ItemGroup>
 
     <ItemGroup>
