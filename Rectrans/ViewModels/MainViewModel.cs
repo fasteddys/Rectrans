@@ -1,11 +1,13 @@
-﻿using Prism.Commands;
+﻿using Prism.Mvvm;
+using Rectrans.Views;
+using Prism.Commands;
 using Rectrans.Models;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.ComponentModel;
 using Rectrans.Infrastructure;
+using Rectrans.Services.Implement;
 using System.Collections.ObjectModel;
-using Prism.Mvvm;
 
 namespace Rectrans.ViewModels;
 
@@ -13,7 +15,6 @@ public class MainViewModel : BindableBase
 {
     // ReSharper disable once InconsistentNaming
     private readonly CollectionViewSource MenuItemsCollection;
-
     public ICollectionView SourceCollection => MenuItemsCollection.View;
 
     public MainViewModel()
@@ -58,12 +59,10 @@ public class MainViewModel : BindableBase
         _timer = null;
     }
 
-    internal WindowSize InputWindowSize { get; set; } = null!;
-    internal WindowLocation InputWindowLocation { get; set; } = null!;
-
     private void Translate()
     {
-        if (InputWindowSize.Width == 0 || InputWindowSize.Height == 0)
+        var inputWindow = WindowManager.Default.Resolve<InputWindow>()!;
+        if (inputWindow.Width == 0 || inputWindow.Height == 0)
         {
             // future: add message box
             return;
@@ -77,8 +76,8 @@ public class MainViewModel : BindableBase
             var target = (string) ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
                 .FindItem(x => x.Group == Group.TargetLan && x.IsChecked)!.Extra!;
 
-            (SourceText, TargetText) = await ImageTranslate.TranslateAsync(InputWindowLocation.Left,
-                InputWindowLocation.Top, InputWindowSize.Height, InputWindowSize.Width, source, target);
+            (SourceText, TargetText) = await ImageTranslate.TranslateAsync(inputWindow.Left,
+                inputWindow.Top, inputWindow.Height, inputWindow.Width, source, target);
 
             TextCount = SourceText.Length;
         });
