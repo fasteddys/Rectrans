@@ -7,9 +7,9 @@ namespace Rectrans.Extensions
 {
     internal static class WindowExtension
     {
-        public static bool IsClosed(this Window window)
+        public static bool IsClosed(this Window? window)
         {
-            return PresentationSource.FromVisual(window) == null;
+            return window == null || PresentationSource.FromVisual(window) == null;
         }
 
         public static Notifier Notifier(this Window window,

@@ -15,8 +15,7 @@ public partial class InputWindow
     public InputWindow()
     {
         InitializeComponent();
-        MouseLeftButtonDown += delegate { DragMove(); };
-        DataContext = new InputViewModel();
+        DataContext = new InputViewModel(this);
         Notifier = this.Notifier(Corner.BottomCenter, 0, 50);
 
         WindowManager.Default.Register(this);

@@ -1,39 +1,143 @@
 <Window x:Class="Rectrans.Views.InputWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModels="clr-namespace:Rectrans.ViewModels"
-        Style="{StaticResource InputWindowStyle}"
+        xmlns:local="clr-namespace:Rectrans.Views" 
+        Topmost="True"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        MinHeight="{Binding WindowMinimumHeight}"
+        MinWidth="{Binding WindowMinimumWidth}"
         WindowStartupLocation="CenterScreen"
-        mc:Ignorable="d"
-        Opacity="0.8"
-        Height="200" Width="500"
-        Title="翻译框">
-    
-    <Window.DataContext>
-        <viewModels:InputViewModel />
-    </Window.DataContext>
+        Title="翻译框选窗口" Height="300" Width="600">
 
-    <DockPanel>
-        <Border DockPanel.Dock="Top" VerticalAlignment="Top" Height="30" Background="Moccasin">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                <ToggleButton HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              Style="{DynamicResource ToggleButtonStyle}"
-                              Content="自动翻译"
-                              ToolTip="自动翻译开关"
-                              Margin="15 2" />
+    <Window.Resources>
+        <!-- Start: InputWindow-->
+        <Style TargetType="{x:Type local:InputWindow}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Window}">
+                        <!-- Outer border with the dropshadow margin -->
+                        <Border Padding="{Binding OuterMarginSizeThickness, FallbackValue=10}">
 
-                <Button HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Style="{DynamicResource PrimaryButtonStyle}"
-                        ToolTip="点击执行翻译"
-                        Command="{Binding TranslateCommand}"
-                        Content="翻译"
-                        Margin="15 2" />
+                            <DockPanel LastChildFill="True">
 
-            </StackPanel>
-        </Border>
-    </DockPanel>
+                                <!-- Main window outline -->
+                                <Grid DockPanel.Dock="Top">
+
+                                    <!-- Opacity mask for corners on grid -->
+                                    <Border x:Name="Container" 
+                                        Background="{StaticResource BackgroundLightBrush}"
+                                        CornerRadius="{Binding WindowTopCornerRadius, FallbackValue=10}" />
+
+                                    <!-- Window border and dropshadow -->
+                                    <Border Background="{StaticResource ForegroundLightBrush}"
+                                        CornerRadius="{Binding WindowTopCornerRadius, FallbackValue=10}">
+
+                                        <Border.Effect>
+                                            <DropShadowEffect ShadowDepth="0" Opacity=".2"/>
+                                        </Border.Effect>
+                                    </Border>
+
+                                    <!-- The main window content-->
+                                    <Grid>
+
+                                        <!-- Corner clipping -->
+                                        <Grid.OpacityMask>
+                                            <VisualBrush Visual="{Binding ElementName=Container}"/>
+                                        </Grid.OpacityMask>
+
+                                        <Grid.RowDefinitions>
+
+                                            <!-- Title Bar -->
+                                            <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=32}"/>
+                                            <!-- Drop shadow -->
+                                            <RowDefinition Height="Auto"/>
+
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Title Bar -->
+                                        <Grid Grid.Column="0" Panel.ZIndex="1">
+
+                                            <Grid.ColumnDefinitions>
+
+                                                <!-- Title -->
+                                                <ColumnDefinition Width="2*"/>
+                                                <!-- Auto Translate Mode -->
+                                                <ColumnDefinition Width="*"/>
+                                                <!-- Translate Button -->
+                                                <ColumnDefinition Width="*"/>
+
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Title -->
+                                            <Viewbox Margin="0">
+                                                <TextBlock Style="{StaticResource HeaderText}" Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Title, FallbackValue='Welcome, friend!'}"/>
+                                            </Viewbox>
+                                            <!-- Window Button -->
+                                            <ToggleButton Grid.Column="1" 
+                                                          Style="{StaticResource WindowControlToggleButton}" 
+                                                          Content="Auto"
+                                                          ToolTip="自动翻译模式"/>
+
+                                            <!-- Window Button -->
+                                            <Button Grid.Column="2" Command="{Binding MinimizeCommand}" 
+                                                    Style="{StaticResource WindowControlButton}" 
+                                                    Content="Go"
+                                                    ToolTip="执行翻译"/>
+
+                                        </Grid>
+
+                                        <!-- Drop shadow -->
+                                        <Border Grid.Row="1" Height="3" BorderThickness="0 0.2 0 0">
+
+                                            <!-- Underline -->
+                                            <Border.BorderBrush>
+                                                <LinearGradientBrush StartPoint="0 0" EndPoint="1 0">
+                                                    <GradientStop Color="{StaticResource ForegroundLight}" Offset="0.0"/>
+                                                    <GradientStop Color="{StaticResource ForegroundMain}" Offset="0.5"/>
+                                                    <GradientStop Color="{StaticResource ForegroundLight}" Offset="1.0"/>
+                                                </LinearGradientBrush>
+                                            </Border.BorderBrush>
+
+                                            <!-- Drop shadow -->
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+                                                    <GradientStop Color="{StaticResource BackgroundVeryLight}" Offset="0.0"/>
+                                                    <GradientStop Color="{StaticResource ForegroundLight}" Offset="1.0"/>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+
+                                        </Border>
+
+                                    </Grid>
+
+                                </Grid>
+
+                                <!-- Window Content -->
+                                <Grid DockPanel.Dock="Top">
+
+                                    <Border CornerRadius="{Binding WindowBottomCornerRadius}" 
+                                            BorderBrush="{StaticResource ForegroundMainBrush}" 
+                                            BorderThickness="{Binding InnerMarginSizeThickness}"
+                                            Background="{StaticResource ForegroundMainOpacityBrush}">
+
+                                    </Border>
+                                </Grid>
+                            </DockPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- End: InputWindow-->
+    </Window.Resources>
+
+    <!-- Start: WindowChrome -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome ResizeBorderThickness="{Binding ResizeBorderThickness}"
+            CaptionHeight="{Binding TitleHeight}"
+            CornerRadius="0"
+            GlassFrameThickness="0" />
+    </WindowChrome.WindowChrome>
+    <!-- End: WindowChrome -->
 </Window>

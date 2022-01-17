@@ -3,14 +3,149 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:local="clr-namespace:Rectrans" 
+        xmlns:viewmodels="clr-namespace:Rectrans.ViewModels"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         Topmost="{Binding ElementName=ToMostButton, Path= IsChecked}"
-        Title="Rectrans 机翻" Height="450" Width="800"
+        Title="Rectrans 翻译器" 
+        Height="450" Width="800"
+        MinHeight="{Binding WindowMinimumHeight}"
+        MinWidth="{Binding WindowMinimumWidth}"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Style="{DynamicResource ModernWindow}"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="CanResizeWithGrip"
         mc:Ignorable="d">
 
+    <Window.Resources>
+        <!-- Start: MainWindow -->
+        <Style TargetType="{x:Type Window}" x:Key="ModernWindow">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Window}">
 
+                        <!-- Outer border with the dropshadow margin -->
+                        <Border Padding="{Binding OuterMarginSizeThickness, FallbackValue=10}">
+
+                            <!-- Main window outline -->
+                            <Grid>
+
+                                <!-- Opacity mask for corners on grid -->
+                                <Border x:Name="Container" 
+                                        Background="{StaticResource BackgroundLightBrush}"
+                                        CornerRadius="{Binding WindowCornerRadius, FallbackValue=10}" />
+
+                                <!-- Window border and dropshadow -->
+                                <Border CornerRadius="{Binding WindowCornerRadius, FallbackValue=10}"
+                                        Background="{StaticResource ForegroundLightBrush}">
+
+                                    <Border.Effect>
+                                        <DropShadowEffect ShadowDepth="0" Opacity=".2"/>
+                                    </Border.Effect>
+                                </Border>
+
+                                <!-- The main window content-->
+                                <Grid>
+
+                                    <!-- Corner clipping -->
+                                    <Grid.OpacityMask>
+                                        <VisualBrush Visual="{Binding ElementName=Container}"/>
+                                    </Grid.OpacityMask>
+
+                                    <Grid.RowDefinitions>
+
+                                        <!-- Title Bar -->
+                                        <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=42}"/>
+                                        <!-- Drop shadow -->
+                                        <RowDefinition Height="Auto"/>
+                                        <!-- Window Content -->
+                                        <RowDefinition Height="*" />
+
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Title Bar -->
+                                    <Grid Grid.Column="0" Panel.ZIndex="1">
+
+                                        <Grid.ColumnDefinitions>
+
+                                            <!-- Icon -->
+                                            <ColumnDefinition Width="Auto"/>
+                                            <!-- Title -->
+                                            <ColumnDefinition Width="*"/>
+                                            <!-- Window Button -->
+                                            <ColumnDefinition Width="Auto"/>
+
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Icon -->
+                                        <Button Style="{StaticResource SystemIconButton}" Command="{Binding IconCommand}">
+                                            <Image Source="../Images/Logo/logo-small.png"/>
+                                        </Button>
+
+                                        <!-- Title -->
+                                        <Viewbox Grid.Column="1" Margin="0">
+                                            <TextBlock Style="{StaticResource HeaderText}" Text="{Binding Title, RelativeSource={RelativeSource Mode=TemplatedParent}, FallbackValue='Welcome, friend!'}"/>
+                                        </Viewbox>
+
+                                        <!-- Window Button -->
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                            <ToggleButton Command="{Binding TopMostCommand}" Style="{StaticResource WindowControlToggleButton}" Content="T"/>
+                                            <Button Command="{Binding MinimizeCommand}" Style="{StaticResource WindowControlButtonWithScaleX}" Content="_"/>
+                                            <Button Command="{Binding MaximizeCommand}" Style="{StaticResource WindowControlButtonWithScaleX}" Content="[ ]"/>
+                                            <Button Command="{Binding CloseCommand}" Style="{StaticResource WindowCloseButton}" Content="X"/>
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                    <!-- Drop shadow -->
+                                    <Border Grid.Row="1" Height="6" BorderThickness="0 0.2 0 0">
+
+                                        <!-- Underline -->
+                                        <Border.BorderBrush>
+                                            <LinearGradientBrush StartPoint="0 0" EndPoint="1 0">
+                                                <GradientStop Color="{StaticResource ForegroundLight}" Offset="0.0"/>
+                                                <GradientStop Color="{StaticResource ForegroundMain}" Offset="0.5"/>
+                                                <GradientStop Color="{StaticResource ForegroundLight}" Offset="1.0"/>
+                                            </LinearGradientBrush>
+                                        </Border.BorderBrush>
+
+                                        <!-- Drop shadow -->
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+                                                <GradientStop Color="{StaticResource BackgroundVeryLight}" Offset="0.0"/>
+                                                <GradientStop Color="{StaticResource ForegroundLight}" Offset="1.0"/>
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+
+                                    </Border>
+
+                                    <!-- Window Content-->
+                                    <Border Grid.Row="2" Padding="{Binding InnerContentPadding}">
+                                        <ContentPresenter Content="{TemplateBinding Content}"/>
+                                    </Border>
+
+                                </Grid>
+
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- End: MainWindow -->
+    </Window.Resources>
+
+    <!-- Start: WindowChrome -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome ResizeBorderThickness="{Binding ResizeBorderThickness}"
+                      CaptionHeight="{Binding TitleHeight}"
+                      CornerRadius="0"
+                      GlassFrameThickness="0" />
+    </WindowChrome.WindowChrome>
+    <!-- End: WindowChrome -->
+
+
+    <!-- Start: Main Content-->
     <DockPanel>
         <Menu DockPanel.Dock="Top" ItemsSource="{Binding SourceCollection}">
             <Menu.ItemContainerStyle>
@@ -40,17 +175,17 @@
 
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
-                <Button Content="开始翻译" Command="{Binding ConfirmCommand}" />
+                <Button Content="开始翻译" Command="{Binding TranslateCommand}" />
 
                 <ToggleButton x:Name="ToMostButton">
                     <ToggleButton.ContentTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <iconPacks:PackIconModern
+                                <!--<iconPacks:PackIconModern
                                     Width="12"
                                     Height="12"
                                     VerticalAlignment="Center"
-                                    Kind="Pin" />
+                                    Kind="Pin" />-->
 
                             </StackPanel>
                         </DataTemplate>
@@ -119,4 +254,5 @@
             </ScrollViewer>
         </Grid>
     </DockPanel>
+    <!-- End: Main Content-->
 </Window>

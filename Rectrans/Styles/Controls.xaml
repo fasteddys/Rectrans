@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <!-- Order is important -->
+        <ResourceDictionary Source="pack://application:,,,/Rectrans;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rectrans;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rectrans;component/Styles/Buttons.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rectrans;component/Styles/Texts.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

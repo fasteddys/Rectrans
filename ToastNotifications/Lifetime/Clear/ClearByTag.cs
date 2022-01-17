@@ -17,7 +17,7 @@ namespace ToastNotifications.Lifetime.Clear
                 .Select(x => x.Value.Notification)
                 .Where(x =>
                 {
-                    object? otherTag = x.Options.Tag;
+                    object? otherTag = x.Options?.Tag;
                     if (ReferenceEquals(otherTag, null))
                     {
                         return ReferenceEquals(_tag, null);

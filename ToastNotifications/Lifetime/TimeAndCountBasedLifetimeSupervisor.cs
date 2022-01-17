@@ -35,10 +35,10 @@ namespace ToastNotifications.Lifetime
                 return;
             }
 
-            if (_interval.IsRunning == false)
+            if (_interval?.IsRunning == false)
                 TimerStart();
 
-            if (_notifications.Count == _maximumNotificationCount)
+            if (_notifications?.Count == _maximumNotificationCount)
             {
                 if (_notificationsPending == null)
                 {
@@ -48,7 +48,7 @@ namespace ToastNotifications.Lifetime
                 return;
             }
 
-            int numberOfNotificationsToClose = Math.Max(_notifications.Count - _maximumNotificationCount + 1, 0);
+            int numberOfNotificationsToClose = Math.Max(_notifications!.Count - _maximumNotificationCount + 1, 0);
 
             var notificationsToRemove = _notifications
                 .OrderBy(x => x.Key)
@@ -65,7 +65,7 @@ namespace ToastNotifications.Lifetime
 
         public void CloseNotification(INotification notification)
         {
-            _notifications.TryRemove(notification.Id, out var removedNotification);
+            _notifications!.TryRemove(notification.Id, out var removedNotification);
             RequestCloseNotification(new CloseNotificationEventArgs(removedNotification.Notification));
 
             if (_notificationsPending != null && _notificationsPending.Any())
@@ -109,7 +109,7 @@ namespace ToastNotifications.Lifetime
 
         private void TimerStart()
         {
-            _interval?.Invoke(TimeSpan.FromMilliseconds(200), OnTimerTick, _dispatcher);
+            _interval?.Invoke(TimeSpan.FromMilliseconds(200), OnTimerTick, _dispatcher!);
         }
 
         private void TimerStop()
@@ -121,7 +121,7 @@ namespace ToastNotifications.Lifetime
         {
             TimeSpan now = DateTimeNow.Local.TimeOfDay;
 
-            var notificationsToRemove = _notifications
+            var notificationsToRemove = _notifications!
                 .Where(x => x.Value.Notification.CanClose && x.Value.CreateTime + _notificationLifetime <= now)
                 .Select(x => x.Value)
                 .ToList();
@@ -129,7 +129,7 @@ namespace ToastNotifications.Lifetime
             foreach (var n in notificationsToRemove)
                 CloseNotification(n.Notification);
 
-            if (_notifications.IsEmpty)
+            if (_notifications!.IsEmpty)
                 TimerStop();
         }
 

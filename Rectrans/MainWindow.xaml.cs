@@ -4,8 +4,8 @@ using Rectrans.Views;
 using ToastNotifications;
 using Rectrans.ViewModels;
 using Rectrans.Extensions;
-using Rectrans.Services.Implement;
 using ToastNotifications.Messages;
+using Rectrans.Services.Implement;
 
 namespace Rectrans
 {
@@ -23,7 +23,7 @@ namespace Rectrans
             InitializeComponent();
             MouseLeftButtonDown += delegate { DragMove(); };
 
-            DataContext = new MainViewModel();
+            DataContext = new MainViewModel(this);
             Notifier = this.Notifier();
             WindowManager.Default.Register(this);
 
@@ -41,7 +41,7 @@ namespace Rectrans
             {
                 InputWindow.Close();
             }
-            Notifier.Dispose();
+            //Notifier.Dispose();
         }
 
         protected override void OnStateChanged(EventArgs e)

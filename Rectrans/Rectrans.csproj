@@ -1,33 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFrameworks>net6.0-windows;net48</TargetFrameworks>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFrameworks>net6.0-windows;net48</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
-        <LangVersion>10.0</LangVersion>
-        <Nullable>enable</Nullable>
-        <UseWPF>true</UseWPF>
-    </PropertyGroup>
+		<LangVersion>10.0</LangVersion>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Rectrans.Infrastructure\Rectrans.Infrastructure.csproj" />
-        <ProjectReference Include="..\Rectrans.UI\Rectrans.UI.csproj" />
-        <ProjectReference Include="..\ToastNotifications.Messages\ToastNotifications.Messages.csproj" />
-        <ProjectReference Include="..\ToastNotifications\ToastNotifications.csproj" />
-    </ItemGroup>
 
-    <ItemGroup>
-        <Resource Include="Fonts\FiraCode-Regular.ttf" />
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Rectrans.Infrastructure\Rectrans.Infrastructure.csproj" />
+		<ProjectReference Include="..\ToastNotifications.Messages\ToastNotifications.Messages.csproj" />
+		<ProjectReference Include="..\ToastNotifications\ToastNotifications.csproj" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Prism.DryIoc" Version="8.1.97" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <None Update="appsettings.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<Content Include="Fonts\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Images\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
 </Project>

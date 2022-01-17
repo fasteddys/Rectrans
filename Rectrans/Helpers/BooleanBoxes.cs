@@ -1,4 +1,4 @@
-﻿namespace Rectrans.UI;
+﻿namespace Rectrans.Helpers;
 
 /// <summary>
 /// Helps boxing Boolean values.

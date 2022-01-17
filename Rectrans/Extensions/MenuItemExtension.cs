@@ -1,4 +1,6 @@
-﻿namespace Rectrans.Models;
+﻿using Rectrans.Models;
+
+namespace Rectrans.Extensions;
 
 internal static class MenuItemExtension
 {

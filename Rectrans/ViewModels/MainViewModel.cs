@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using System.Windows;
+using Rectrans.Extensions;
 using Rectrans.Views;
 using Prism.Commands;
 using Rectrans.Models;
@@ -8,20 +9,121 @@ using System.ComponentModel;
 using Rectrans.Infrastructure;
 using Rectrans.Services.Implement;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 
 namespace Rectrans.ViewModels;
 
-public class MainViewModel : BindableBase
+public class MainViewModel : ModernWindow
 {
+    #region Private Member
+
     // ReSharper disable once InconsistentNaming
     private readonly CollectionViewSource MenuItemsCollection;
+
+    /// <summary>
+    /// The timer for auto translate.
+    /// </summary>
+    private DispatcherTimer timer = new();
+
+    /// <summary>
+    /// The text for source text.
+    /// </summary>
+    private string? sourceText;
+
+    /// <summary>
+    /// The text for target text.
+    /// </summary>
+    private string? targetText;
+
+    /// <summary>
+    /// The count of source text.
+    /// </summary>
+    private int textCount;
+
+    #endregion
+
+    #region Public Properties
+
     public ICollectionView SourceCollection => MenuItemsCollection.View;
 
-    public MainViewModel()
+    /// <summary>
+    /// The text for source text.
+    /// </summary>
+    public string SourceText
     {
-        MenuItemsCollection = new() {Source = BindingCommand(MenuItem.DefaultCollection)};
+        get => sourceText ??= string.Empty;
+        set
+        {
+            sourceText = value;
+            RaisePropertyChanged();
+        }
     }
 
+    /// <summary>
+    /// The text for target text.
+    /// </summary>
+    public string TargetText
+    {
+        get => targetText ??= string.Empty;
+        set
+        {
+            targetText = value;
+            RaisePropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// The total count of source text.
+    /// </summary>
+    public int TextCount
+    {
+        get => textCount;
+        set
+        {
+            textCount += value;
+            RaisePropertyChanged();
+        }
+    }
+
+    #endregion
+
+    #region Commands
+
+    /// <summary>
+    /// The command of Translate.
+    /// </summary>
+    public ICommand TranslateCommand { get; set; }
+
+    /// <summary>
+    /// The command of menu item.
+    /// </summary>
+    // ReSharper disable once MemberCanBePrivate.Global
+    public ICommand MenuItemCommand { get; set; }
+
+    #endregion
+
+    #region Construcotr
+
+    public MainViewModel(Window window)
+        : base(window)
+    {
+        // Create commands
+        TranslateCommand = new DelegateCommand(Translate);
+        MenuItemCommand = new DelegateCommand<MenuItem>(MenuItemSelected);
+
+        // Create menu items
+        MenuItemsCollection = new() { Source = BindingCommand(MenuItem.DefaultCollection) };
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    /// <summary>
+    /// Binding command for menu items.
+    /// </summary>
+    /// <param name="source"></param>
+    /// <returns></returns>
     private ObservableCollection<MenuItem> BindingCommand(IEnumerable<MenuItem> source)
     {
         var items = source as MenuItem[] ?? source.ToArray();
@@ -32,19 +134,23 @@ public class MainViewModel : BindableBase
                 BindingCommand(item.ItemsSource!);
             }
 
-            item.Command = MenuCommand;
+            item.Command = MenuItemCommand;
             item.CommandParameter = item;
         }
 
         return new ObservableCollection<MenuItem>(items);
     }
 
-    private void MenuSelected(MenuItem? parameter)
+    /// <summary>
+    /// The command of menu item.
+    /// </summary>
+    /// <param name="parameter"></param>
+    private void MenuItemSelected(MenuItem? parameter)
     {
         if (parameter?.Group == null) return;
 
-        foreach (var item in ((ObservableCollection<MenuItem>) MenuItemsCollection.Source).FindItems(x =>
-                     x.Group == parameter.Group)!)
+        foreach (var item in ((ObservableCollection<MenuItem>)MenuItemsCollection.Source).FindItems(x =>
+                    x.Group == parameter.Group)!)
         {
             if (item != parameter)
             {
@@ -54,12 +160,14 @@ public class MainViewModel : BindableBase
 
         MenuItemsCollection.View.Refresh();
 
-        if (parameter.Key != "Stop" || _timer == null) return;
-        _timer.Dispose();
-        _timer = null;
+        if (parameter.Header != "停止") return;
+        timer.Stop();
     }
 
-    private void Translate()
+    /// <summary>
+    /// Execute translate.
+    /// </summary>
+    private async void Translate()
     {
         var inputWindow = WindowManager.Default.Resolve<InputWindow>()!;
         if (inputWindow.Width == 0 || inputWindow.Height == 0)
@@ -68,87 +176,30 @@ public class MainViewModel : BindableBase
             return;
         }
 
-        System.Windows.Application.Current.Dispatcher.BeginInvoke(async () =>
-        {
-            var source = (string) ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
-                .FindItem(x => x.Group == Group.SourceLan && x.IsChecked)!.Extra!;
+        var source = (string)((ObservableCollection<MenuItem>)MenuItemsCollection.Source)
+            .FindItem(x => x.Group == Group.SourceLan && x.IsChecked)!.Extra!;
 
-            var target = (string) ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
-                .FindItem(x => x.Group == Group.TargetLan && x.IsChecked)!.Extra!;
+        var target = (string)((ObservableCollection<MenuItem>)MenuItemsCollection.Source)
+            .FindItem(x => x.Group == Group.TargetLan && x.IsChecked)!.Extra!;
 
-            (SourceText, TargetText) = await ImageTranslate.TranslateAsync(inputWindow.Left,
-                inputWindow.Top, inputWindow.Height, inputWindow.Width, source, target);
-
-            TextCount = SourceText.Length;
-        });
-    }
-
-    private static System.Timers.Timer? _timer;
-
-    private void Confirm()
-    {
-        var item = ((ObservableCollection<MenuItem>) MenuItemsCollection.Source)
+        var item = ((ObservableCollection<MenuItem>)MenuItemsCollection.Source)
             .FindItem(x => x.Group == Group.AntoTranslate && x.IsChecked);
 
         if (item != null)
         {
-            _timer ??= new System.Timers.Timer();
+            timer.Tick += new EventHandler(async (_, _) =>
+            {
+                (SourceText, TargetText, TextCount) = await ImageTranslate.ExecuteAsync(inputWindow.Left,
+                inputWindow.Top, inputWindow.Height, inputWindow.Width, source, target);
+            });
 
-            _timer.Interval = Convert.ToInt16(item.Extra!);
-            _timer.Elapsed += (_, _) => { Translate(); };
-
-            _timer.Start();
+            timer.Interval = TimeSpan.FromMilliseconds(Convert.ToDouble(item.Extra!));
+            timer.Start();
         }
 
-        Translate();
+        (SourceText, TargetText, TextCount) = await ImageTranslate.ExecuteAsync(inputWindow.Left,
+                inputWindow.Top, inputWindow.Height, inputWindow.Width, source, target);
     }
-
-    #region UIBinding
-
-    private string? _sourceText;
-
-    public string SourceText
-    {
-        get => _sourceText ??= string.Empty;
-        set
-        {
-            _sourceText = value;
-            RaisePropertyChanged();
-        }
-    }
-
-    private string? _targetText;
-
-    public string TargetText
-    {
-        get => _targetText ??= string.Empty;
-        set
-        {
-            _targetText = value;
-            RaisePropertyChanged();
-        }
-    }
-
-    private int _textCount;
-
-    public int TextCount
-    {
-        get => _textCount;
-        set
-        {
-            _textCount += value;
-            RaisePropertyChanged();
-        }
-    }
-
-    private ICommand? _confirmCommand;
-
-    public ICommand ConfirmCommand => _confirmCommand ??= new DelegateCommand(Confirm);
-
-    private ICommand? _menuCommand;
-
-    // ReSharper disable once MemberCanBePrivate.Global
-    public ICommand MenuCommand => _menuCommand ??= new DelegateCommand<MenuItem>(MenuSelected);
 
     #endregion
 }
