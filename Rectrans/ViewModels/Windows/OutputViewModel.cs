@@ -1,22 +1,30 @@
-using Prism.Commands;
-using Prism.Mvvm;
-using Rectrans.Helpers;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
+using Prism.Commands;
+using Prism.Events;
+using Prism.Mvvm;
+using Rectrans.Events;
+using Rectrans.Extensions;
+using Rectrans.Helpers;
+using Rectrans.Views.Windows;
 
-namespace Rectrans.ViewModels;
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+
+// ReSharper disable InconsistentNaming
+
+namespace Rectrans.ViewModels.Windows;
 
 /// <summary>
 /// The View Model for the custom flat window
 /// </summary>
-public class InputViewModel : BindableBase
+public class OutputViewModel : BindableBase
 {
     #region Private Member
 
     /// <summary>
     /// The window this view model controls
     /// </summary>
-    private Window mWindow;
+    private OutputWindow outputWindow;
 
     /// <summary>
     /// The margin around the window to allow for a drop shadow
@@ -38,6 +46,11 @@ public class InputViewModel : BindableBase
     /// </summary>
     private WindowDockPosition mDockPosition = WindowDockPosition.Undocked;
 
+    /// <summary>
+    /// The text of output.
+    /// </summary>
+    private string translationText = "此窗口为翻译后文字的输出窗口，请拖动此窗口至方便查看的位置！";
+
     #endregion
 
     #region Public Properties
@@ -45,17 +58,18 @@ public class InputViewModel : BindableBase
     /// <summary>
     /// The smallest width the window can go to
     /// </summary>
-    public double WindowMinimumWidth { get; set; } = 400;
+    public double WindowMinimumWidth { get; set; } = 200;
 
     /// <summary>
     /// The smallest height the window can go to
     /// </summary>
-    public double WindowMinimumHeight { get; set; } = 200;
+    public double WindowMinimumHeight { get; set; } = 100;
 
     /// <summary>
     /// True if the window should be borderless because it is docked or maximized
     /// </summary>
-    public bool Borderless { get { return (mWindow.WindowState == WindowState.Maximized || mDockPosition != WindowDockPosition.Undocked); } }
+    public bool Borderless =>
+        (outputWindow.WindowState == WindowState.Maximized || mDockPosition != WindowDockPosition.Undocked);
 
     /// <summary>
     /// The size of the resize border around the window
@@ -65,84 +79,87 @@ public class InputViewModel : BindableBase
     /// <summary>
     /// The size of the resize border around the window, taking into account the outer margin
     /// </summary>
-    public Thickness ResizeBorderThickness { get { return new Thickness(ResizeBorder + OuterMarginSize); } }
+    public Thickness ResizeBorderThickness => new(ResizeBorder + OuterMarginSize);
 
     /// <summary>
     /// The margin around the window to allow for a drop shadow
     /// </summary>
     public int OuterMarginSize
     {
-        get
-        {
-            // If it is maximized or docked, no border
-            return Borderless ? 0 : mOuterMarginSize;
-        }
-        set
-        {
-            mOuterMarginSize = value;
-        }
+        // If it is maximized or docked, no border
+        get => Borderless ? 0 : mOuterMarginSize;
+        set => mOuterMarginSize = value;
     }
 
     /// <summary>
     /// The margin around the window to allow for a drop shadow
     /// </summary>
-    public Thickness OuterMarginSizeThickness { get { return new Thickness(OuterMarginSize); } }
+    public Thickness OuterMarginSizeThickness => new(OuterMarginSize);
 
     /// <summary>
     /// The margin around the window content
     /// </summary>
-    public int InnerMarginSize
-    {
-        get
-        {
-            // If it is maximized or docked, no border
-            return Borderless ? 0 : mInnerMarginSize;
-        }
-        set
-        {
-            mInnerMarginSize = value;
-        }
-    }
+    public int InnerMarginSize =>
+        // If it is maximized or docked, no border
+        Borderless ? 0 : mInnerMarginSize;
 
     /// <summary>
     /// The margin around the window content
     /// </summary>
-    public Thickness InnerMarginSizeThickness { get { return new Thickness(InnerMarginSize); } }
+    public Thickness InnerMarginSizeThickness => new(InnerMarginSize);
 
     /// <summary>
     /// The radius of the edges of the window
     /// </summary>
     public int WindowRadius
     {
-        get
-        {
-            // If it is maximized or docked, no border
-            return Borderless ? 0 : mWindowRadius;
-        }
-        set
-        {
-            mWindowRadius = value;
-        }
+        // If it is maximized or docked, no border
+        get => Borderless ? 0 : mWindowRadius;
+        set => mWindowRadius = value;
     }
 
     /// <summary>
     /// The radius of the edges of the window top.
     /// </summary>
-    public CornerRadius WindowTopCornerRadius { get { return new CornerRadius(WindowRadius, WindowRadius, 0, 0); } }
+    public CornerRadius WindowTopCornerRadius => new(WindowRadius, WindowRadius, 0, 0);
 
     /// <summary>
     /// The radius of the edges of the window bottom.
     /// </summary>
-    public CornerRadius WindowBottomCornerRadius { get { return new CornerRadius(0, 0, WindowRadius, WindowRadius); } }
+    public CornerRadius WindowBottomCornerRadius => new(0, 0, WindowRadius, WindowRadius);
 
     /// <summary>
     /// The height of the title bar / caption of the window
     /// </summary>
     public int TitleHeight { get; set; } = 32;
+
     /// <summary>
     /// The height of the title bar / caption of the window
     /// </summary>
-    public GridLength TitleHeightGridLength { get { return new GridLength(TitleHeight + ResizeBorder); } }
+    public GridLength TitleHeightGridLength => new(TitleHeight + ResizeBorder);
+
+    /// <summary>
+    /// The padding of the inner content of the main window
+    /// </summary>
+    public Thickness InnerContentPadding => new(ResizeBorder);
+
+    /// <summary>
+    /// The text of output.
+    /// </summary>
+    public string TranslationText
+    {
+        get => translationText;
+        set
+        {
+            translationText = value;
+            RaisePropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// The font size of out put text block.
+    /// </summary>
+    public double FontSize { get; set; }
 
     #endregion
 
@@ -153,6 +170,16 @@ public class InputViewModel : BindableBase
     /// </summary>
     public ICommand MinimizeCommand { get; set; }
 
+    /// <summary>
+    /// The command to maximize the window
+    /// </summary>
+    public ICommand MaximizeCommand { get; set; }
+
+    /// <summary>
+    /// The command to close the window
+    /// </summary>
+    public ICommand CloseCommand { get; set; }
+
     #endregion
 
     #region Constructor
@@ -160,25 +187,30 @@ public class InputViewModel : BindableBase
     /// <summary>
     /// Default constructor
     /// </summary>
-    public InputViewModel(Window window)
+    public OutputViewModel(OutputWindow window, IEventAggregator aggregator)
     {
-        mWindow = window;
+        outputWindow = window;
 
         // Listen out for the window resizing
-        mWindow.StateChanged += (sender, e) =>
+        outputWindow.StateChanged += (_, _) =>
         {
             // Fire off events for all properties that are affected by a resize
             WindowResized();
         };
 
+        // Listen out for the window size changed
+        outputWindow.SizeChanged += (_, _) => CalculateFontSize();
+
         // Create commands
-        MinimizeCommand = new DelegateCommand(() => mWindow.WindowState = WindowState.Minimized);
+        MinimizeCommand = new DelegateCommand(() => outputWindow.WindowState = WindowState.Minimized);
+        MaximizeCommand = new DelegateCommand(() => outputWindow.WindowState ^= WindowState.Maximized);
+        CloseCommand = new DelegateCommand(() => outputWindow.Close());
 
         // Fix window resize issue
-        var resizer = new WindowResizer(mWindow);
+        var resizer = new WindowResizer(outputWindow);
 
         // Listen out for dock changes
-        resizer.WindowDockChanged += (dock) =>
+        resizer.WindowDockChanged += dock =>
         {
             // Store last position
             mDockPosition = dock;
@@ -186,24 +218,18 @@ public class InputViewModel : BindableBase
             // Fire off resize events
             WindowResized();
         };
+
+        // Subscribe output event
+        aggregator.GetEvent<OutputEvent>().Subscribe(arg =>
+        {
+            TranslationText = arg.TranslationText;
+            CalculateFontSize();
+        });
     }
 
     #endregion
 
     #region Private Helpers
-
-    /// <summary>
-    /// Gets the current mouse position on the screen
-    /// </summary>
-    /// <returns></returns>
-    private Point GetMousePosition()
-    {
-        // Position of the mouse relative to the window
-        var position = Mouse.GetPosition(mWindow);
-
-        // Add the window position so its a "ToScreen"
-        return new Point(position.X + mWindow.Left, position.Y + mWindow.Top);
-    }
 
     /// <summary>
     /// If the window resizes to a special position (docked or maximized)
@@ -220,6 +246,11 @@ public class InputViewModel : BindableBase
         RaisePropertyChanged(nameof(WindowTopCornerRadius));
     }
 
+    private void CalculateFontSize()
+    {
+        FontSize = outputWindow.OutputTextBlock.CalculateFontSize(TranslationText, "Lato Thin", "zh-cn");
+        RaisePropertyChanged(nameof(FontSize));
+    }
 
     #endregion
 }

@@ -58,7 +58,8 @@
     <!-- End: Window Control Button -->
 
     <!-- Start: Window Control Button With ScaleX -->
-    <Style TargetType="{x:Type Button}" x:Key="WindowControlButtonWithScaleX" BasedOn="{StaticResource WindowControlButton}">
+    <Style TargetType="{x:Type Button}" x:Key="WindowControlButtonWithScaleX"
+           BasedOn="{StaticResource WindowControlButton}">
         <Setter Property="LayoutTransform">
             <Setter.Value>
                 <ScaleTransform ScaleX="1.5" />
@@ -103,7 +104,8 @@
     <!-- End: Window Control Toggle Button -->
 
     <!-- Start: Window Close Button -->
-    <Style TargetType="{x:Type Button}" x:Key="WindowCloseButton" BasedOn="{StaticResource WindowControlButtonWithScaleX}">
+    <Style TargetType="{x:Type Button}" x:Key="WindowCloseButton"
+           BasedOn="{StaticResource WindowControlButtonWithScaleX}">
 
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">

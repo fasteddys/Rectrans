@@ -3,19 +3,36 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Rectrans" 
-        xmlns:viewmodels="clr-namespace:Rectrans.ViewModels"
-        d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+        xmlns:views="clr-namespace:Rectrans.Views"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:windows="clr-namespace:Rectrans.ViewModels.Windows"
+        d:DataContext="{d:DesignInstance Type=windows:MainViewModel}"
         Topmost="{Binding ElementName=ToMostButton, Path= IsChecked}"
-        Title="Rectrans 翻译器" 
-        Height="450" Width="800"
         MinHeight="{Binding WindowMinimumHeight}"
         MinWidth="{Binding WindowMinimumWidth}"
-        WindowStyle="None"
-        AllowsTransparency="True"
         Style="{DynamicResource ModernWindow}"
         WindowStartupLocation="CenterScreen"
-        mc:Ignorable="d">
+        mc:Ignorable="d"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Height="630" Width="750"
+        Title="Rectrans 翻译器">
+
+    <!-- Start: Main Content-->
+    <Viewbox>
+        <TabControl Width="600" Height="450" Style="{StaticResource TabControl}" Padding="50">
+            <TabItem Header="原文" Style="{StaticResource TabItem}">
+                <prism:ContainerProvider Type="{x:Type views:OriginalView}" />
+            </TabItem>
+            <TabItem Header="译文" Style="{StaticResource TabItem}">
+                <prism:ContainerProvider Type="{x:Type views:TranslationView}" />
+            </TabItem>
+            <TabItem Header="设置" Style="{StaticResource TabItem}">
+                <prism:ContainerProvider Type="{x:Type views:SettingView}" />
+            </TabItem>
+        </TabControl>
+    </Viewbox>
+    <!-- End: Main Content-->
 
     <Window.Resources>
         <!-- Start: MainWindow -->
@@ -31,7 +48,7 @@
                             <Grid>
 
                                 <!-- Opacity mask for corners on grid -->
-                                <Border x:Name="Container" 
+                                <Border x:Name="Container"
                                         Background="{StaticResource BackgroundLightBrush}"
                                         CornerRadius="{Binding WindowCornerRadius, FallbackValue=10}" />
 
@@ -40,7 +57,7 @@
                                         Background="{StaticResource ForegroundLightBrush}">
 
                                     <Border.Effect>
-                                        <DropShadowEffect ShadowDepth="0" Opacity=".2"/>
+                                        <DropShadowEffect ShadowDepth="0" Opacity=".2" />
                                     </Border.Effect>
                                 </Border>
 
@@ -49,15 +66,15 @@
 
                                     <!-- Corner clipping -->
                                     <Grid.OpacityMask>
-                                        <VisualBrush Visual="{Binding ElementName=Container}"/>
+                                        <VisualBrush Visual="{Binding ElementName=Container}" />
                                     </Grid.OpacityMask>
 
                                     <Grid.RowDefinitions>
 
                                         <!-- Title Bar -->
-                                        <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=42}"/>
+                                        <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=42}" />
                                         <!-- Drop shadow -->
-                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto" />
                                         <!-- Window Content -->
                                         <RowDefinition Height="*" />
 
@@ -69,30 +86,38 @@
                                         <Grid.ColumnDefinitions>
 
                                             <!-- Icon -->
-                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto" />
                                             <!-- Title -->
-                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*" />
                                             <!-- Window Button -->
-                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto" />
 
                                         </Grid.ColumnDefinitions>
 
                                         <!-- Icon -->
-                                        <Button Style="{StaticResource SystemIconButton}" Command="{Binding IconCommand}">
-                                            <Image Source="../Images/Logo/logo-small.png"/>
+                                        <Button Style="{StaticResource SystemIconButton}"
+                                                Command="{Binding IconCommand}">
+                                            <Image Source="../Images/Logo/logo-small.png" />
                                         </Button>
 
                                         <!-- Title -->
                                         <Viewbox Grid.Column="1" Margin="0">
-                                            <TextBlock Style="{StaticResource HeaderText}" Text="{Binding Title, RelativeSource={RelativeSource Mode=TemplatedParent}, FallbackValue='Welcome, friend!'}"/>
+                                            <TextBlock Style="{StaticResource HeaderText}"
+                                                       Text="{Binding Title, RelativeSource={RelativeSource Mode=TemplatedParent}, FallbackValue='Welcome, friend!'}" />
                                         </Viewbox>
 
                                         <!-- Window Button -->
                                         <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                            <ToggleButton Command="{Binding TopMostCommand}" Style="{StaticResource WindowControlToggleButton}" Content="T"/>
-                                            <Button Command="{Binding MinimizeCommand}" Style="{StaticResource WindowControlButtonWithScaleX}" Content="_"/>
-                                            <Button Command="{Binding MaximizeCommand}" Style="{StaticResource WindowControlButtonWithScaleX}" Content="[ ]"/>
-                                            <Button Command="{Binding CloseCommand}" Style="{StaticResource WindowCloseButton}" Content="X"/>
+                                            <ToggleButton Command="{Binding TopMostCommand}"
+                                                          Style="{StaticResource WindowControlToggleButton}"
+                                                          Content="T" />
+                                            <Button Command="{Binding MinimizeCommand}"
+                                                    Style="{StaticResource WindowControlButtonWithScaleX}" Content="_" />
+                                            <Button Command="{Binding MaximizeCommand}"
+                                                    Style="{StaticResource WindowControlButtonWithScaleX}"
+                                                    Content="[ ]" />
+                                            <Button Command="{Binding CloseCommand}"
+                                                    Style="{StaticResource WindowCloseButton}" Content="X" />
                                         </StackPanel>
 
                                     </Grid>
@@ -103,17 +128,17 @@
                                         <!-- Underline -->
                                         <Border.BorderBrush>
                                             <LinearGradientBrush StartPoint="0 0" EndPoint="1 0">
-                                                <GradientStop Color="{StaticResource ForegroundLight}" Offset="0.0"/>
-                                                <GradientStop Color="{StaticResource ForegroundMain}" Offset="0.5"/>
-                                                <GradientStop Color="{StaticResource ForegroundLight}" Offset="1.0"/>
+                                                <GradientStop Color="{StaticResource ForegroundLight}" Offset="0.0" />
+                                                <GradientStop Color="{StaticResource ForegroundMain}" Offset="0.5" />
+                                                <GradientStop Color="{StaticResource ForegroundLight}" Offset="1.0" />
                                             </LinearGradientBrush>
                                         </Border.BorderBrush>
 
                                         <!-- Drop shadow -->
                                         <Border.Background>
                                             <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
-                                                <GradientStop Color="{StaticResource BackgroundVeryLight}" Offset="0.0"/>
-                                                <GradientStop Color="{StaticResource ForegroundLight}" Offset="1.0"/>
+                                                <GradientStop Color="{StaticResource BackgroundVeryLight}" Offset="0.0" />
+                                                <GradientStop Color="{StaticResource ForegroundLight}" Offset="1.0" />
                                             </LinearGradientBrush>
                                         </Border.Background>
 
@@ -121,7 +146,7 @@
 
                                     <!-- Window Content-->
                                     <Border Grid.Row="2" Padding="{Binding InnerContentPadding}">
-                                        <ContentPresenter Content="{TemplateBinding Content}"/>
+                                        <ContentPresenter Content="{TemplateBinding Content}" />
                                     </Border>
 
                                 </Grid>
@@ -143,116 +168,4 @@
                       GlassFrameThickness="0" />
     </WindowChrome.WindowChrome>
     <!-- End: WindowChrome -->
-
-
-    <!-- Start: Main Content-->
-    <DockPanel>
-        <Menu DockPanel.Dock="Top" ItemsSource="{Binding SourceCollection}">
-            <Menu.ItemContainerStyle>
-                <Style TargetType="MenuItem">
-                    <Setter Property="Header" Value="{Binding Header}" />
-                    <Setter Property="IsCheckable" Value="{Binding IsCheckable}" />
-                    <Setter Property="IsChecked" Value="{Binding IsChecked}" />
-                    <Setter Property="Command" Value="{Binding Command}" />
-                    <Setter Property="CommandParameter" Value="{Binding CommandParameter}" />
-                    <Setter Property="ItemsSource" Value="{Binding ItemsSource}" />
-
-                    <Setter Property="ItemContainerStyle">
-                        <Setter.Value>
-                            <Style TargetType="MenuItem">
-                                <Setter Property="Header" Value="{Binding Header}" />
-                                <Setter Property="IsCheckable" Value="{Binding IsCheckable}" />
-                                <Setter Property="IsChecked" Value="{Binding IsChecked}" />
-                                <Setter Property="Command" Value="{Binding Command}" />
-                                <Setter Property="CommandParameter" Value="{Binding CommandParameter}" />
-                                <Setter Property="ItemsSource" Value="{Binding ItemsSource}" />
-                            </Style>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </Menu.ItemContainerStyle>
-        </Menu>
-
-        <ToolBarTray DockPanel.Dock="Top">
-            <ToolBar>
-                <Button Content="开始翻译" Command="{Binding TranslateCommand}" />
-
-                <ToggleButton x:Name="ToMostButton">
-                    <ToggleButton.ContentTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <!--<iconPacks:PackIconModern
-                                    Width="12"
-                                    Height="12"
-                                    VerticalAlignment="Center"
-                                    Kind="Pin" />-->
-
-                            </StackPanel>
-                        </DataTemplate>
-                    </ToggleButton.ContentTemplate>
-                </ToggleButton>
-            </ToolBar>
-        </ToolBarTray>
-
-        <StatusBar DockPanel.Dock="Bottom">
-            <StackPanel Orientation="Horizontal" Margin="10 0 0 0 ">
-                <TextBlock Text="字数统计：" />
-                <TextBlock Text="{Binding TextCount}" />
-            </StackPanel>
-        </StatusBar>
-
-        <Grid Margin="20" DockPanel.Dock="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-
-            <Label
-                Grid.Row="0"
-                Content="原文："
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Width="80" Height="25" />
-
-            <ScrollViewer
-                Grid.Row="0"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Margin="20,20"
-                VerticalScrollBarVisibility="Auto"
-                HorizontalScrollBarVisibility="Disabled">
-
-                <TextBlock
-                    Padding="10"
-                    TextWrapping="Wrap"
-                    Text="{Binding SourceText}"
-                    FontSize="16" />
-
-            </ScrollViewer>
-
-            <Label
-                Grid.Row="1"
-                Content="译文："
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Width="80" Height="25" />
-
-            <ScrollViewer
-                Grid.Row="1"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Margin="20,20"
-                VerticalScrollBarVisibility="Auto"
-                HorizontalScrollBarVisibility="Disabled">
-
-                <TextBlock
-                    Padding="10"
-                    TextWrapping="Wrap"
-                    Text="{Binding TargetText}"
-                    FontSize="16" />
-
-            </ScrollViewer>
-        </Grid>
-    </DockPanel>
-    <!-- End: Main Content-->
 </Window>

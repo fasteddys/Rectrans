@@ -1,21 +1,23 @@
-using ToastNotifications;
-using Rectrans.ViewModels;
+using Prism.Ioc;
 using Rectrans.Extensions;
-using ToastNotifications.Core;
 using Rectrans.Services.Implement;
+using Rectrans.ViewModels;
+using Rectrans.ViewModels.Windows;
+using ToastNotifications;
+using ToastNotifications.Core;
 using ToastNotifications.Messages;
 using ToastNotifications.Position;
 
-namespace Rectrans.Views;
+namespace Rectrans.Views.Windows;
 
 public partial class InputWindow
 {
     public Notifier Notifier { get; }
 
-    public InputWindow()
+    public InputWindow(IContainerProvider containerProvider)
     {
         InitializeComponent();
-        DataContext = new InputViewModel(this);
+        DataContext = containerProvider.Resolve<InputViewModel>((typeof(InputWindow), this));
         Notifier = this.Notifier(Corner.BottomCenter, 0, 50);
 
         WindowManager.Default.Register(this);
@@ -29,7 +31,7 @@ public partial class InputWindow
         // input window closed, but main window still in visual.
         if (!mainWindow.IsClosed())
         {
-            mainWindow.Notifier.ShowError("ÄúÒÑ¹Ø±Õ¡°·­Òë¿ò¡±´°¿Ú£¬ÇëÖØÆô³ÌÐò½øÐÐ»Ö¸´£¡", new MessageOptions
+            mainWindow.Notifier.ShowError("æ‚¨å·²å…³é—­â€œç¿»è¯‘æ¡†â€çª—å£ï¼Œè¯·é‡å¯ç¨‹åºè¿›è¡Œæ¢å¤ï¼", new MessageOptions
             {
                 CloseClickAction = _ =>
                 {

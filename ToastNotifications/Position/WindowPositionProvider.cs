@@ -141,10 +141,12 @@ namespace ToastNotifications.Position
             RequestUpdatePosition();
         }
 
+#pragma warning disable CS0067
         public event EventHandler? UpdatePositionRequested;
 
         public event EventHandler? UpdateEjectDirectionRequested;
 
         public event EventHandler? UpdateHeightRequested;
+#pragma warning restore CS0067
     }
 }

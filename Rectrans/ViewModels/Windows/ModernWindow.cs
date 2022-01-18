@@ -1,10 +1,10 @@
-﻿using Prism.Commands;
+﻿using System.Windows;
+using System.Windows.Input;
+using Prism.Commands;
 using Prism.Mvvm;
 using Rectrans.Helpers;
-using System.Windows;
-using System.Windows.Input;
 
-namespace Rectrans.ViewModels
+namespace Rectrans.ViewModels.Windows
 {
     public class ModernWindow: BindableBase
     {

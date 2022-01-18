@@ -15,7 +15,6 @@ namespace Rectrans
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
         }
     }
 }

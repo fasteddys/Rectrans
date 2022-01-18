@@ -1,11 +1,13 @@
 ﻿using Prism.Ioc;
 using System.Windows;
-using Rectrans.Views;
 using ToastNotifications;
 using Rectrans.ViewModels;
 using Rectrans.Extensions;
 using ToastNotifications.Messages;
 using Rectrans.Services.Implement;
+using Rectrans.ViewModels.Windows;
+using Rectrans.Views.Windows;
+using OutputWindow = Rectrans.Views.Windows.OutputWindow;
 
 namespace Rectrans
 {
@@ -23,11 +25,14 @@ namespace Rectrans
             InitializeComponent();
             MouseLeftButtonDown += delegate { DragMove(); };
 
-            DataContext = new MainViewModel(this);
+            DataContext = containerProvider.Resolve<MainViewModel>((typeof(MainWindow), this));
             Notifier = this.Notifier();
             WindowManager.Default.Register(this);
 
             InputWindow = containerProvider.Resolve<InputWindow>();
+            var outputWindow = containerProvider.Resolve<OutputWindow>();
+
+            outputWindow.Show();
             InputWindow.Show();
 
             // must show the window first

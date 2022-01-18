@@ -7,5 +7,7 @@
         <ResourceDictionary Source="pack://application:,,,/Rectrans;component/Styles/Fonts.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Rectrans;component/Styles/Buttons.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Rectrans;component/Styles/Texts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rectrans;component/Styles/ComboBoxs.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rectrans;component/Styles/TabControls.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

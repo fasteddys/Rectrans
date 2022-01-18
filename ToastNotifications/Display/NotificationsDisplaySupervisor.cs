@@ -76,7 +76,7 @@ namespace ToastNotifications.Display
                 if (_window != null)
                     return;
 
-                _window = new NotificationsWindow(_positionProvider.ParentWindow);
+                _window = new NotificationsWindow(_positionProvider.ParentWindow!);
                 _window.SetDisplayOptions(_displayOptions);
                 _window.MinHeight = _positionProvider.GetHeight();
                 _window.Height = _positionProvider.GetHeight();
