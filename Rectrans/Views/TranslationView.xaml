@@ -5,12 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Rectrans.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewModels:TranslationViewModel}"
-             xmlns:local="clr-namespace:Rectrans.Views"
              mc:Ignorable="d">
-    <Grid>
-        <TextBlock FontSize="20"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Text="{Binding TranslationText}"/>
+
+    <Grid Margin="10">
+
+        <ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Center"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+
+            <TextBlock TextWrapping="Wrap"
+                       Width="{Binding TextBlockWidth, FallbackValue=550}"
+                       FontSize="{Binding FontSize, FallbackValue=20}"
+                       Text="{Binding TranslationText}" />
+
+        </ScrollViewer>
+
     </Grid>
 </UserControl>

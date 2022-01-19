@@ -6,7 +6,8 @@
              xmlns:viewModels="clr-namespace:Rectrans.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewModels:SettingViewModel}"
              mc:Ignorable="d">
-    <Grid>
+
+    <Grid Margin="50">
         <Grid.RowDefinitions>
             <!-- Language settings -->
             <RowDefinition Height="*" />
@@ -54,7 +55,7 @@
                       ItemsSource="{Binding LanguageItems}"
                       SelectedValue="{Binding SelectedSourceLanguageValue, Mode=OneWayToSource}"
                       SelectedIndex="0">
-                
+
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}" />

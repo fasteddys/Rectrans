@@ -14,12 +14,22 @@ public class TranslationViewModel : BindableBase
     /// <summary>
     /// The view this view model controls
     /// </summary>
-    private TranslationView translationView;
+    private readonly TranslationView translationView;
+
+    /// <summary>
+    /// The output text block width
+    /// </summary>
+    private int textBlockWidth = 550;
 
     /// <summary>
     /// The text of translated
     /// </summary>
     private string translationText = "";
+
+    /// <summary>
+    /// The font size of out put text block
+    /// </summary>
+    private double fontSize = 20;
 
     #endregion
 
@@ -38,6 +48,32 @@ public class TranslationViewModel : BindableBase
         }
     }
 
+    /// <summary>
+    /// The output text block width
+    /// </summary>
+    public int TextBlockWidth
+    {
+        get => textBlockWidth;
+        set
+        {
+            textBlockWidth = value;
+            RaisePropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// The font size of out put text block.
+    /// </summary>
+    public double FontSize
+    {
+        get => fontSize;
+        set
+        {
+            fontSize = value;
+            RaisePropertyChanged();
+        }
+    }
+
     #endregion
 
     #region Constructor
@@ -47,7 +83,7 @@ public class TranslationViewModel : BindableBase
         translationView = view;
 
         // Subscribe output event
-        aggregator.GetEvent<OutputEvent>().Subscribe(arg => { TranslationText = arg.TranslationText; });
+        aggregator.GetEvent<OutputEvent>().Subscribe(arg => TranslationText = arg.TranslationText);
     }
 
     #endregion

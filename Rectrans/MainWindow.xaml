@@ -7,7 +7,6 @@
         xmlns:prism="http://prismlibrary.com/"
         xmlns:windows="clr-namespace:Rectrans.ViewModels.Windows"
         d:DataContext="{d:DesignInstance Type=windows:MainViewModel}"
-        Topmost="{Binding ElementName=ToMostButton, Path= IsChecked}"
         MinHeight="{Binding WindowMinimumHeight}"
         MinWidth="{Binding WindowMinimumWidth}"
         Style="{DynamicResource ModernWindow}"
@@ -15,23 +14,32 @@
         mc:Ignorable="d"
         WindowStyle="None"
         AllowsTransparency="True"
-        Height="630" Width="750"
+        Height="650" Width="750"
         Title="Rectrans 翻译器">
 
     <!-- Start: Main Content-->
-    <Viewbox>
-        <TabControl Width="600" Height="450" Style="{StaticResource TabControl}" Padding="50">
-            <TabItem Header="原文" Style="{StaticResource TabItem}">
-                <prism:ContainerProvider Type="{x:Type views:OriginalView}" />
+
+    <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center">
+        <!-- Start: TabControl-->
+        <TabControl Width="{Binding TabControlWidth}"
+                    Height="{Binding TabControlHeight}"
+                    Style="{StaticResource TabControl}">
+
+            <TabItem Header="选项" Style="{StaticResource TabItem}">
+                <prism:ContainerProvider Type="{x:Type views:SettingView}" />
             </TabItem>
             <TabItem Header="译文" Style="{StaticResource TabItem}">
                 <prism:ContainerProvider Type="{x:Type views:TranslationView}" />
             </TabItem>
-            <TabItem Header="设置" Style="{StaticResource TabItem}">
-                <prism:ContainerProvider Type="{x:Type views:SettingView}" />
+            <TabItem Header="原文" Style="{StaticResource TabItem}">
+                <prism:ContainerProvider Type="{x:Type views:OriginalView}" />
             </TabItem>
+
         </TabControl>
+        <!-- End: TabControl-->
+
     </Viewbox>
+
     <!-- End: Main Content-->
 
     <Window.Resources>
@@ -41,7 +49,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Window}">
 
-                        <!-- Outer border with the dropshadow margin -->
+                        <!-- Outer border with the drop shadow margin -->
                         <Border Padding="{Binding OuterMarginSizeThickness, FallbackValue=10}">
 
                             <!-- Main window outline -->
@@ -52,7 +60,7 @@
                                         Background="{StaticResource BackgroundLightBrush}"
                                         CornerRadius="{Binding WindowCornerRadius, FallbackValue=10}" />
 
-                                <!-- Window border and dropshadow -->
+                                <!-- Window border and drop shadow -->
                                 <Border CornerRadius="{Binding WindowCornerRadius, FallbackValue=10}"
                                         Background="{StaticResource ForegroundLightBrush}">
 
@@ -103,14 +111,15 @@
                                         <!-- Title -->
                                         <Viewbox Grid.Column="1" Margin="0">
                                             <TextBlock Style="{StaticResource HeaderText}"
-                                                       Text="{Binding Title, RelativeSource={RelativeSource Mode=TemplatedParent}, FallbackValue='Welcome, friend!'}" />
+                                                       Text="{Binding Title, RelativeSource={RelativeSource Mode=TemplatedParent}, FallbackValue='Rectrans 翻译器'}" />
                                         </Viewbox>
 
                                         <!-- Window Button -->
                                         <StackPanel Grid.Column="2" Orientation="Horizontal">
                                             <ToggleButton Command="{Binding TopMostCommand}"
                                                           Style="{StaticResource WindowControlToggleButton}"
-                                                          Content="T" />
+                                                          Content="T"
+                                                          ToolTip="窗口置顶"/>
                                             <Button Command="{Binding MinimizeCommand}"
                                                     Style="{StaticResource WindowControlButtonWithScaleX}" Content="_" />
                                             <Button Command="{Binding MaximizeCommand}"

@@ -1,61 +1,99 @@
 ﻿using Prism.Ioc;
-using System.Windows;
+using Prism.Events;
+using Rectrans.Events;
 using ToastNotifications;
-using Rectrans.ViewModels;
 using Rectrans.Extensions;
-using ToastNotifications.Messages;
-using Rectrans.Services.Implement;
-using Rectrans.ViewModels.Windows;
 using Rectrans.Views.Windows;
-using OutputWindow = Rectrans.Views.Windows.OutputWindow;
+using ToastNotifications.Core;
+using ToastNotifications.Messages;
+using Rectrans.ViewModels.Windows;
 
-namespace Rectrans
+// ReSharper disable InconsistentNaming
+
+// ReSharper disable MemberCanBePrivate.Global
+
+namespace Rectrans;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow
 {
+    #region Private Members
+
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// The input window
     /// </summary>
-    public partial class MainWindow
+    private readonly InputWindow inputWindow;
+
+    /// <summary>
+    /// The output window
+    /// </summary>
+    private readonly OutputWindow outputWindow;
+
+    #endregion
+
+    #region Public Properties
+
+    /// <summary>
+    /// The message notifier
+    /// </summary>
+    public Notifier Notifier { get; }
+
+    #endregion
+
+    #region Construction
+
+    public MainWindow(IContainerProvider containerProvider, IEventAggregator aggregator)
     {
-        public Notifier Notifier { get; }
-        // ReSharper disable once InconsistentNaming
-        private readonly InputWindow InputWindow = null!;
+        InitializeComponent();
 
-        public MainWindow(IContainerProvider containerProvider)
+        DataContext = containerProvider.Resolve<MainViewModel>((typeof(MainWindow), this));
+        Notifier = this.Notifier();
+
+        inputWindow = containerProvider.Resolve<InputWindow>();
+        outputWindow = containerProvider.Resolve<OutputWindow>();
+
+        outputWindow.Show();
+        inputWindow.Show();
+
+        // must show the window first
+        inputWindow.Notifier.ShowInformation("提示: 将此窗口拖动至需要翻译的区域!");
+
+        // Subscribe window closed event
+        aggregator.GetEvent<WindowClosedEvent>().Subscribe(() =>
         {
-            InitializeComponent();
-            MouseLeftButtonDown += delegate { DragMove(); };
-
-            DataContext = containerProvider.Resolve<MainViewModel>((typeof(MainWindow), this));
-            Notifier = this.Notifier();
-            WindowManager.Default.Register(this);
-
-            InputWindow = containerProvider.Resolve<InputWindow>();
-            var outputWindow = containerProvider.Resolve<OutputWindow>();
-
-            outputWindow.Show();
-            InputWindow.Show();
-
-            // must show the window first
-            InputWindow.Notifier.ShowInformation("提示: 将此窗口拖动至需要翻译的区域!");
-        }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-            if (!InputWindow.IsClosed())
+            // input window closed, but main window still in visual.
+            if (!this.IsClosed())
             {
-                InputWindow.Close();
+                Notifier.ShowError("您已关闭“翻译框”窗口，请重启程序进行恢复！", new MessageOptions
+                {
+                    CloseClickAction = _ => Close()
+                });
             }
-            //Notifier.Dispose();
-        }
-
-        protected override void OnStateChanged(EventArgs e)
-        {
-            base.OnStateChanged(e);
-            if (WindowState != WindowState.Maximized)
-            {
-                InputWindow.WindowState = WindowState;
-            }
-        }
+        });
     }
+
+    #endregion
+
+    #region Override Methods
+
+    protected override void OnClosed(EventArgs e)
+    {
+        base.OnClosed(e);
+
+        if (!inputWindow.IsClosed())
+        {
+            inputWindow.Close();
+        }
+        
+        if (!outputWindow.IsClosed())
+        {
+            outputWindow.Close();
+        }
+
+        Notifier.Dispose();
+    }
+
+    #endregion
 }

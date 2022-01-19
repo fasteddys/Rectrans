@@ -44,8 +44,14 @@ public class SettingViewModel : BindableBase
 
     #region Public Properties
 
+    /// <summary>
+    /// Initialize language items
+    /// </summary>
     public ObservableCollection<ComboBoxItem> LanguageItems { get; set; }
 
+    /// <summary>
+    /// Initialize interval items
+    /// </summary>
     public ObservableCollection<ComboBoxItem> IntervalItems { get; set; }
 
     /// <summary>

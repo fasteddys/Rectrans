@@ -11,6 +11,7 @@ namespace Rectrans.Views.Windows
         public OutputWindow(IContainerProvider containerProvider)
         {
             InitializeComponent();
+            MouseLeftButtonDown += (_, _) => DragMove();
             DataContext = containerProvider.Resolve<OutputViewModel>((typeof(OutputWindow), this));
         }
     }

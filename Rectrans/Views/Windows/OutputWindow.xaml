@@ -18,11 +18,11 @@
     <!-- Start: Main Content-->
     <TextBlock x:Name="OutputTextBlock"
                TextWrapping="Wrap"
-               FontSize="{Binding FontSize}" 
-               Text="{Binding TranslationText}" 
+               FontSize="{Binding FontSize}"
+               Text="{Binding TranslationText}"
                FontWeight="Bold"
                Foreground="Coral"
-               TextTrimming="WordEllipsis"/>
+               TextTrimming="WordEllipsis" />
     <!-- End: Main Content-->
 
     <Window.Resources>
@@ -41,16 +41,16 @@
                                 <Grid DockPanel.Dock="Top">
 
                                     <!-- Opacity mask for corners on grid -->
-                                    <Border x:Name="Container" 
-                                        Background="{StaticResource BackgroundLightBrush}"
-                                        CornerRadius="{Binding WindowTopCornerRadius, FallbackValue=10}" />
+                                    <Border x:Name="Container"
+                                            Background="{StaticResource BackgroundLightBrush}"
+                                            CornerRadius="{Binding WindowTopCornerRadius, FallbackValue=10}" />
 
                                     <!-- Window border and dropshadow -->
                                     <Border Background="{StaticResource ForegroundLightBrush}"
-                                        CornerRadius="{Binding WindowTopCornerRadius, FallbackValue=10}">
+                                            CornerRadius="{Binding WindowTopCornerRadius, FallbackValue=10}">
 
                                         <Border.Effect>
-                                            <DropShadowEffect ShadowDepth="0" Opacity=".2"/>
+                                            <DropShadowEffect ShadowDepth="0" Opacity=".2" />
                                         </Border.Effect>
                                     </Border>
 
@@ -59,15 +59,15 @@
 
                                         <!-- Corner clipping -->
                                         <Grid.OpacityMask>
-                                            <VisualBrush Visual="{Binding ElementName=Container}"/>
+                                            <VisualBrush Visual="{Binding ElementName=Container}" />
                                         </Grid.OpacityMask>
 
                                         <Grid.RowDefinitions>
 
                                             <!-- Title Bar -->
-                                            <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=32}"/>
+                                            <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=32}" />
                                             <!-- Drop shadow -->
-                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto" />
 
                                         </Grid.RowDefinitions>
 
@@ -77,22 +77,28 @@
                                             <Grid.ColumnDefinitions>
 
                                                 <!-- Title -->
-                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*" />
                                                 <!-- Window Button -->
-                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto" />
 
                                             </Grid.ColumnDefinitions>
 
                                             <!-- Title -->
                                             <Viewbox Margin="0">
-                                                <TextBlock Style="{StaticResource HeaderText}" Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Title, FallbackValue='Welcome, friend!'}"/>
+                                                <TextBlock Style="{StaticResource HeaderText}"
+                                                           Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Title, FallbackValue='Welcome, friend!'}" />
                                             </Viewbox>
 
                                             <!-- Window Button -->
                                             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                                <Button Command="{Binding MinimizeCommand}" Style="{StaticResource WindowControlButtonWithScaleX}" Content="_"/>
-                                                <Button Command="{Binding MaximizeCommand}" Style="{StaticResource WindowControlButtonWithScaleX}" Content="[ ]"/>
-                                                <Button Command="{Binding CloseCommand}" Style="{StaticResource WindowCloseButton}" Content="X"/>
+                                                <Button Command="{Binding MinimizeCommand}"
+                                                        Style="{StaticResource WindowControlButtonWithScaleX}"
+                                                        Content="_" />
+                                                <Button Command="{Binding MaximizeCommand}"
+                                                        Style="{StaticResource WindowControlButtonWithScaleX}"
+                                                        Content="[ ]" />
+                                                <Button Command="{Binding CloseCommand}"
+                                                        Style="{StaticResource WindowCloseButton}" Content="X" />
                                             </StackPanel>
 
                                         </Grid>
@@ -103,17 +109,18 @@
                                             <!-- Underline -->
                                             <Border.BorderBrush>
                                                 <LinearGradientBrush StartPoint="0 0" EndPoint="1 0">
-                                                    <GradientStop Color="{StaticResource ForegroundLight}" Offset="0.0"/>
-                                                    <GradientStop Color="{StaticResource ForegroundMain}" Offset="0.5"/>
-                                                    <GradientStop Color="{StaticResource ForegroundLight}" Offset="1.0"/>
+                                                    <GradientStop Color="{StaticResource ForegroundLight}" Offset="0.0" />
+                                                    <GradientStop Color="{StaticResource ForegroundMain}" Offset="0.5" />
+                                                    <GradientStop Color="{StaticResource ForegroundLight}" Offset="1.0" />
                                                 </LinearGradientBrush>
                                             </Border.BorderBrush>
 
                                             <!-- Drop shadow -->
                                             <Border.Background>
                                                 <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
-                                                    <GradientStop Color="{StaticResource BackgroundVeryLight}" Offset="0.0"/>
-                                                    <GradientStop Color="{StaticResource ForegroundLight}" Offset="1.0"/>
+                                                    <GradientStop Color="{StaticResource BackgroundVeryLight}"
+                                                                  Offset="0.0" />
+                                                    <GradientStop Color="{StaticResource ForegroundLight}" Offset="1.0" />
                                                 </LinearGradientBrush>
                                             </Border.Background>
 
@@ -124,12 +131,12 @@
                                 </Grid>
 
                                 <!-- Window border and drop shadow -->
-                                <Border CornerRadius="{Binding WindowBottomCornerRadius}" 
-                                            BorderBrush="{StaticResource ForegroundMainBrush}" 
-                                            BorderThickness="{Binding InnerMarginSizeThickness}"
-                                            Background="{StaticResource ForegroundMainOpacityBrush}"
-                                            Padding="{Binding InnerContentPadding}">
-                                    
+                                <Border CornerRadius="{Binding WindowBottomCornerRadius}"
+                                        BorderBrush="{StaticResource ForegroundMainBrush}"
+                                        BorderThickness="{Binding InnerMarginSizeThickness}"
+                                        Background="{StaticResource ForegroundMainOpacityBrush}"
+                                        Padding="{Binding InnerContentPadding}">
+
                                     <Border.Effect>
                                         <DropShadowEffect ShadowDepth="0" Opacity=".2" />
                                     </Border.Effect>
@@ -148,9 +155,9 @@
     <!-- Start: WindowChrome -->
     <WindowChrome.WindowChrome>
         <WindowChrome ResizeBorderThickness="{Binding ResizeBorderThickness}"
-            CaptionHeight="{Binding TitleHeight}"
-            CornerRadius="0"
-            GlassFrameThickness="0" />
+                      CaptionHeight="{Binding TitleHeight}"
+                      CornerRadius="0"
+                      GlassFrameThickness="0" />
     </WindowChrome.WindowChrome>
     <!-- End: WindowChrome -->
 </Window>

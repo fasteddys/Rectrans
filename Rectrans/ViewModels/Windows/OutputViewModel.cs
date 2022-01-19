@@ -159,7 +159,7 @@ public class OutputViewModel : BindableBase
     /// <summary>
     /// The font size of out put text block.
     /// </summary>
-    public double FontSize { get; set; }
+    public double FontSize { get; set; } = 16;
 
     #endregion
 
@@ -203,6 +203,7 @@ public class OutputViewModel : BindableBase
 
         // Create commands
         MinimizeCommand = new DelegateCommand(() => outputWindow.WindowState = WindowState.Minimized);
+        // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
         MaximizeCommand = new DelegateCommand(() => outputWindow.WindowState ^= WindowState.Maximized);
         CloseCommand = new DelegateCommand(() => outputWindow.Close());
 

@@ -1,14 +1,14 @@
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Threading;
-using Prism.Commands;
-using Prism.Events;
 using Prism.Mvvm;
+using Prism.Events;
+using System.Windows;
+using Prism.Commands;
 using Rectrans.Events;
 using Rectrans.Helpers;
-using Rectrans.Infrastructure;
+using System.Windows.Input;
 using Rectrans.Views.Windows;
+using Rectrans.Infrastructure;
+using System.Windows.Threading;
+using ToastNotifications.Messages;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable MemberCanBePrivate.Global
@@ -36,27 +36,32 @@ public class InputViewModel : BindableBase
     /// <summary>
     /// The margin around the window to allow for a drop shadow
     /// </summary>
-    private int mOuterMarginSize = 10;
+    private int outerMarginSize = 10;
 
     /// <summary>
     /// The margin around the window content.
     /// </summary>
-    private int mInnerMarginSize = 2;
+    private int innerMarginSize = 2;
 
     /// <summary>
     /// The radius of the edges of the window
     /// </summary>
-    private int mWindowRadius = 10;
+    private int windowRadius = 10;
 
     /// <summary>
     /// The last known dock position
     /// </summary>
-    private WindowDockPosition mDockPosition = WindowDockPosition.Undocked;
+    private WindowDockPosition dockPosition = WindowDockPosition.Undocked;
 
     /// <summary>
     /// The timer for auto mode
     /// </summary>
     private DispatcherTimer? autoModeTimer;
+
+    /// <summary>
+    /// The auto mode system button checked or ont
+    /// </summary>
+    private bool autoModeButtonIsChecked;
 
     #endregion
 
@@ -65,17 +70,18 @@ public class InputViewModel : BindableBase
     /// <summary>
     /// The smallest width the window can go to
     /// </summary>
-    public double WindowMinimumWidth { get; set; } = 400;
+    public double WindowMinimumWidth { get; set; } = 200;
 
     /// <summary>
     /// The smallest height the window can go to
     /// </summary>
-    public double WindowMinimumHeight { get; set; } = 200;
+    public double WindowMinimumHeight { get; set; } = 100;
 
     /// <summary>
     /// True if the window should be borderless because it is docked or maximized
     /// </summary>
-    public bool Borderless => inputWindow.WindowState == WindowState.Maximized || mDockPosition != WindowDockPosition.Undocked;
+    public bool Borderless =>
+        inputWindow.WindowState == WindowState.Maximized || dockPosition != WindowDockPosition.Undocked;
 
     /// <summary>
     /// The size of the resize border around the window
@@ -93,8 +99,8 @@ public class InputViewModel : BindableBase
     public int OuterMarginSize
     {
         // If it is maximized or docked, no border
-        get => Borderless ? 0 : mOuterMarginSize;
-        set => mOuterMarginSize = value;
+        get => Borderless ? 0 : outerMarginSize;
+        set => outerMarginSize = value;
     }
 
     /// <summary>
@@ -107,10 +113,9 @@ public class InputViewModel : BindableBase
     /// </summary>
     public int InnerMarginSize
     {
-        
         // If it is maximized or docked, no border
-        get => Borderless ? 0 : mInnerMarginSize;
-        set => mInnerMarginSize = value;
+        get => Borderless ? 0 : innerMarginSize;
+        set => innerMarginSize = value;
     }
 
     /// <summary>
@@ -124,8 +129,8 @@ public class InputViewModel : BindableBase
     public int WindowRadius
     {
         // If it is maximized or docked, no border
-        get => Borderless ? 0 : mWindowRadius;
-        set => mWindowRadius = value;
+        get => Borderless ? 0 : windowRadius;
+        set => windowRadius = value;
     }
 
     /// <summary>
@@ -142,10 +147,24 @@ public class InputViewModel : BindableBase
     /// The height of the title bar / caption of the window
     /// </summary>
     public int TitleHeight { get; set; } = 32;
+
     /// <summary>
     /// The height of the title bar / caption of the window
     /// </summary>
     public GridLength TitleHeightGridLength => new(TitleHeight + ResizeBorder);
+
+    /// <summary>
+    /// The auto mode system button checked or ont
+    /// </summary>
+    public bool AutoModeButtonIsChecked
+    {
+        get => autoModeButtonIsChecked;
+        set
+        {
+            autoModeButtonIsChecked = value;
+            RaisePropertyChanged();
+        }
+    }
 
     /// <summary>
     /// The selected auto translate item, for others set
@@ -196,22 +215,33 @@ public class InputViewModel : BindableBase
         };
 
         // Create commands
-        AutoModeCommand = new DelegateCommand(async()=> await AutoMode());
-        TranslateCommand = new DelegateCommand(async()=> await Translate());
+        AutoModeCommand = new DelegateCommand(async () => await AutoMode());
+        TranslateCommand = new DelegateCommand(async () =>
+        {
+            // Check the timer enable
+
+            if (autoModeTimer is {IsEnabled: true})
+            {
+                inputWindow.Notifier.ShowWarning("自动翻译模式已开启，请先关闭自动模式。");
+                return;
+            }
+            
+            await Translate();
+        });
 
         // Fix window resize issue
         var resizer = new WindowResizer(inputWindow);
 
         // Listen out for dock changes
-        resizer.WindowDockChanged += (dock) =>
+        resizer.WindowDockChanged += dock =>
         {
             // Store last position
-            mDockPosition = dock;
+            dockPosition = dock;
 
             // Fire off resize events
             WindowResized();
         };
-        
+
         // Subscribe setting event
         aggregator.GetEvent<SettingEvent>().Subscribe(arg =>
         {
@@ -242,17 +272,22 @@ public class InputViewModel : BindableBase
 
     private async Task AutoMode()
     {
-        // dosometing
-        if (AutomaticTranslationInterval == 0) return;
-
-        autoModeTimer ??= new DispatcherTimer();
-
         // The second execution is for stop timer
-        if (autoModeTimer.IsEnabled)
+        if (autoModeTimer is {IsEnabled: true})
         {
             autoModeTimer.Stop();
             return;
         }
+
+        if (AutomaticTranslationInterval == 0)
+        {
+            inputWindow.Notifier.ShowInformation("未设置自动翻译时间间隔，请在主界面选项栏中进行设置。");
+            AutoModeButtonIsChecked = false;
+            return;
+        }
+
+        // If timer is null, new one
+        autoModeTimer ??= new DispatcherTimer();
 
         // Config the timer
         autoModeTimer.Interval = TimeSpan.FromMilliseconds(AutomaticTranslationInterval);
@@ -267,19 +302,23 @@ public class InputViewModel : BindableBase
 
     private async Task Translate()
     {
-        var textBlock = (TextBlock)inputWindow.FindName("TranslationAreaBlock")!;
+        var textBlock = inputWindow.TranslationAreaBlock;
         var point = textBlock.PointToScreen(new Point(0, 0));
-        
-        // Translate text
-        var (original, translation, count) = await ImageTranslate.ExecuteAsync(point.X,
-            point.Y, textBlock.ActualHeight, textBlock.ActualWidth, SourceLanguage, DestinationLanguage);
 
-        // Publish the output event
-        aggregator.GetEvent<OutputEvent>().Publish(new OutputEvent
+        // Start another thread to perform this task
+        await Task.Run(async () =>
         {
-            OriginalText = original,
-            TranslationText = translation,
-            Count = count,
+            // Translate text
+            var (original, translation, count) = await ImageTranslate.ExecuteAsync(point.X,
+                point.Y, textBlock.ActualHeight, textBlock.ActualWidth, SourceLanguage, DestinationLanguage);
+
+            // Publish the output event
+            aggregator.GetEvent<OutputEvent>().Publish(new OutputEvent
+            {
+                OriginalText = original,
+                TranslationText = translation,
+                Count = count,
+            });
         });
     }
 
