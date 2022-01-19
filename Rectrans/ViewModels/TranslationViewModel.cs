@@ -29,7 +29,7 @@ public class TranslationViewModel : BindableBase
     /// <summary>
     /// The font size of out put text block
     /// </summary>
-    private double fontSize = 20;
+    private double fontSize = 18;
 
     #endregion
 

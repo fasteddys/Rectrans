@@ -1,9 +1,7 @@
-using Prism.Mvvm;
 using Prism.Events;
 using System.Windows;
 using Prism.Commands;
 using Rectrans.Events;
-using Rectrans.Helpers;
 using System.Windows.Input;
 using Rectrans.Views.Windows;
 using Rectrans.Infrastructure;
@@ -19,7 +17,7 @@ namespace Rectrans.ViewModels.Windows;
 /// <summary>
 /// The View Model for the custom flat window
 /// </summary>
-public class InputViewModel : BindableBase
+public class InputViewModel : MiniModernWindow
 {
     #region Private Member
 
@@ -34,26 +32,6 @@ public class InputViewModel : BindableBase
     private readonly IEventAggregator aggregator;
 
     /// <summary>
-    /// The margin around the window to allow for a drop shadow
-    /// </summary>
-    private int outerMarginSize = 10;
-
-    /// <summary>
-    /// The margin around the window content.
-    /// </summary>
-    private int innerMarginSize = 2;
-
-    /// <summary>
-    /// The radius of the edges of the window
-    /// </summary>
-    private int windowRadius = 10;
-
-    /// <summary>
-    /// The last known dock position
-    /// </summary>
-    private WindowDockPosition dockPosition = WindowDockPosition.Undocked;
-
-    /// <summary>
     /// The timer for auto mode
     /// </summary>
     private DispatcherTimer? autoModeTimer;
@@ -66,92 +44,6 @@ public class InputViewModel : BindableBase
     #endregion
 
     #region Public Properties
-
-    /// <summary>
-    /// The smallest width the window can go to
-    /// </summary>
-    public double WindowMinimumWidth { get; set; } = 200;
-
-    /// <summary>
-    /// The smallest height the window can go to
-    /// </summary>
-    public double WindowMinimumHeight { get; set; } = 100;
-
-    /// <summary>
-    /// True if the window should be borderless because it is docked or maximized
-    /// </summary>
-    public bool Borderless =>
-        inputWindow.WindowState == WindowState.Maximized || dockPosition != WindowDockPosition.Undocked;
-
-    /// <summary>
-    /// The size of the resize border around the window
-    /// </summary>
-    public int ResizeBorder { get; set; } = 6;
-
-    /// <summary>
-    /// The size of the resize border around the window, taking into account the outer margin
-    /// </summary>
-    public Thickness ResizeBorderThickness => new(ResizeBorder + OuterMarginSize);
-
-    /// <summary>
-    /// The margin around the window to allow for a drop shadow
-    /// </summary>
-    public int OuterMarginSize
-    {
-        // If it is maximized or docked, no border
-        get => Borderless ? 0 : outerMarginSize;
-        set => outerMarginSize = value;
-    }
-
-    /// <summary>
-    /// The margin around the window to allow for a drop shadow
-    /// </summary>
-    public Thickness OuterMarginSizeThickness => new(OuterMarginSize);
-
-    /// <summary>
-    /// The margin around the window content
-    /// </summary>
-    public int InnerMarginSize
-    {
-        // If it is maximized or docked, no border
-        get => Borderless ? 0 : innerMarginSize;
-        set => innerMarginSize = value;
-    }
-
-    /// <summary>
-    /// The margin around the window content
-    /// </summary>
-    public Thickness InnerMarginSizeThickness => new(InnerMarginSize);
-
-    /// <summary>
-    /// The radius of the edges of the window
-    /// </summary>
-    public int WindowRadius
-    {
-        // If it is maximized or docked, no border
-        get => Borderless ? 0 : windowRadius;
-        set => windowRadius = value;
-    }
-
-    /// <summary>
-    /// The radius of the edges of the window top.
-    /// </summary>
-    public CornerRadius WindowTopCornerRadius => new(WindowRadius, WindowRadius, 0, 0);
-
-    /// <summary>
-    /// The radius of the edges of the window bottom.
-    /// </summary>
-    public CornerRadius WindowBottomCornerRadius => new(0, 0, WindowRadius, WindowRadius);
-
-    /// <summary>
-    /// The height of the title bar / caption of the window
-    /// </summary>
-    public int TitleHeight { get; set; } = 32;
-
-    /// <summary>
-    /// The height of the title bar / caption of the window
-    /// </summary>
-    public GridLength TitleHeightGridLength => new(TitleHeight + ResizeBorder);
 
     /// <summary>
     /// The auto mode system button checked or ont
@@ -203,19 +95,16 @@ public class InputViewModel : BindableBase
     /// Default constructor
     /// </summary>
     public InputViewModel(InputWindow window, IEventAggregator aggregator)
+        : base(window)
     {
         inputWindow = window;
         this.aggregator = aggregator;
 
-        // Listen out for the window resizing
-        inputWindow.StateChanged += (_, _) =>
-        {
-            // Fire off events for all properties that are affected by a resize
-            WindowResized();
-        };
-
         // Create commands
+        // ReSharper disable once AsyncVoidLambda
         AutoModeCommand = new DelegateCommand(async () => await AutoMode());
+
+        // ReSharper disable once AsyncVoidLambda
         TranslateCommand = new DelegateCommand(async () =>
         {
             // Check the timer enable
@@ -225,22 +114,9 @@ public class InputViewModel : BindableBase
                 inputWindow.Notifier.ShowWarning("自动翻译模式已开启，请先关闭自动模式。");
                 return;
             }
-            
+
             await Translate();
         });
-
-        // Fix window resize issue
-        var resizer = new WindowResizer(inputWindow);
-
-        // Listen out for dock changes
-        resizer.WindowDockChanged += dock =>
-        {
-            // Store last position
-            dockPosition = dock;
-
-            // Fire off resize events
-            WindowResized();
-        };
 
         // Subscribe setting event
         aggregator.GetEvent<SettingEvent>().Subscribe(arg =>
@@ -256,20 +132,8 @@ public class InputViewModel : BindableBase
     #region Private Helpers
 
     /// <summary>
-    /// If the window resizes to a special position (docked or maximized)
-    /// this will update all required property change events to set the borders and radius values
+    /// Auto translate mode
     /// </summary>
-    private void WindowResized()
-    {
-        // Fire off events for all properties that are affected by a resize
-        RaisePropertyChanged(nameof(Borderless));
-        RaisePropertyChanged(nameof(ResizeBorderThickness));
-        RaisePropertyChanged(nameof(OuterMarginSize));
-        RaisePropertyChanged(nameof(OuterMarginSizeThickness));
-        RaisePropertyChanged(nameof(WindowRadius));
-        RaisePropertyChanged(nameof(WindowTopCornerRadius));
-    }
-
     private async Task AutoMode()
     {
         // The second execution is for stop timer
@@ -300,6 +164,9 @@ public class InputViewModel : BindableBase
         autoModeTimer.Start();
     }
 
+    /// <summary>
+    /// Execution translate
+    /// </summary>
     private async Task Translate()
     {
         var textBlock = inputWindow.TranslationAreaBlock;

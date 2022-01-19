@@ -20,8 +20,8 @@
                TextWrapping="Wrap"
                FontSize="{Binding FontSize}"
                Text="{Binding TranslationText}"
-               FontWeight="Bold"
-               Foreground="Coral"
+               FontFamily="{StaticResource LatoBold}"
+               Foreground="{Binding Foreground}"
                TextTrimming="WordEllipsis" />
     <!-- End: Main Content-->
 
@@ -44,9 +44,9 @@
                                     <Border x:Name="Container"
                                             Background="{StaticResource BackgroundLightBrush}"
                                             CornerRadius="{Binding WindowTopCornerRadius, FallbackValue=10}" />
-
-                                    <!-- Window border and dropshadow -->
-                                    <Border Background="{StaticResource ForegroundLightBrush}"
+                                    <!-- Window border and drop shadow -->
+                                    <Border x:Name="DropShadow"
+                                            Background="{StaticResource ForegroundLightBrush}"
                                             CornerRadius="{Binding WindowTopCornerRadius, FallbackValue=10}">
 
                                         <Border.Effect>
@@ -86,7 +86,7 @@
                                             <!-- Title -->
                                             <Viewbox Margin="0">
                                                 <TextBlock Style="{StaticResource HeaderText}"
-                                                           Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Title, FallbackValue='Welcome, friend!'}" />
+                                                           Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Title, FallbackValue='输出窗口'}" />
                                             </Viewbox>
 
                                             <!-- Window Button -->
@@ -125,17 +125,17 @@
                                             </Border.Background>
 
                                         </Border>
-
                                     </Grid>
 
                                 </Grid>
 
                                 <!-- Window border and drop shadow -->
-                                <Border CornerRadius="{Binding WindowBottomCornerRadius}"
-                                        BorderBrush="{StaticResource ForegroundMainBrush}"
-                                        BorderThickness="{Binding InnerMarginSizeThickness}"
+                                <Border x:Name="Content"
+                                        CornerRadius="{Binding WindowBottomCornerRadius}"
+                                        Padding="{Binding InnerContentPadding}"
                                         Background="{StaticResource ForegroundMainOpacityBrush}"
-                                        Padding="{Binding InnerContentPadding}">
+                                        BorderBrush="{StaticResource ForegroundMainOpacityBrush}"
+                                        BorderThickness="{Binding ContentBorderThickness}">
 
                                     <Border.Effect>
                                         <DropShadowEffect ShadowDepth="0" Opacity=".2" />
@@ -145,6 +145,54 @@
                                 </Border>
                             </DockPanel>
                         </Border>
+
+                        <!-- Start: Triggers -->
+                        <ControlTemplate.Triggers>
+                            <!-- Star: border animation-->
+                            <EventTrigger RoutedEvent="Border.MouseEnter">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             Storyboard.TargetName="DropShadow"
+                                                             To="1" Duration="0:0:1" />
+                                            
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             Storyboard.TargetName="Container"
+                                                             To="1" Duration="0:0:1" />
+
+                                            <DoubleAnimation Storyboard.TargetProperty="BorderBrush.Opacity"
+                                                             Storyboard.TargetName="Content"
+                                                             To="1" Duration="0:0:1" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="Border.MouseLeave">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             Storyboard.TargetName="DropShadow"
+                                                             To="0.0" Duration="0:0:2" />
+                                            
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             Storyboard.TargetName="Container"
+                                                             To="0.0" Duration="0:0:3" />
+
+                                            <DoubleAnimation Storyboard.TargetProperty="BorderBrush.Opacity"
+                                                             Storyboard.TargetName="Content"
+                                                             To="0.1" Duration="0:0:1" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                            <!-- Star: border animation-->
+                        </ControlTemplate.Triggers>
+                        <!-- End: Triggers -->
+
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

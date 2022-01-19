@@ -15,7 +15,7 @@
 
     <!-- ReSharper disable once UnusedMember.Global -->
     <TextBlock x:Name="TranslationAreaBlock" />
-    
+
     <Window.Resources>
         <!-- Start: InputWindow-->
         <Style TargetType="{x:Type windows:InputWindow}">
@@ -37,7 +37,8 @@
                                             CornerRadius="{Binding WindowTopCornerRadius, FallbackValue=10}" />
 
                                     <!-- Window border and drop shadow -->
-                                    <Border Background="{StaticResource ForegroundLightBrush}"
+                                    <Border x:Name="DropShadow"
+                                            Background="{StaticResource ForegroundLightBrush}"
                                             CornerRadius="{Binding WindowTopCornerRadius, FallbackValue=10}">
 
                                         <Border.Effect>
@@ -126,18 +127,52 @@
                                 </Grid>
 
                                 <!-- Window border and drop shadow -->
-                                <Border CornerRadius="{Binding WindowBottomCornerRadius}"
-                                        BorderBrush="{StaticResource ForegroundMainBrush}"
-                                        BorderThickness="{Binding InnerMarginSizeThickness}"
-                                        Background="{StaticResource ForegroundMainOpacityBrush}">
+                                <Border x:Name="Content"
+                                        CornerRadius="{Binding WindowBottomCornerRadius}"
+                                        Background="{StaticResource ForegroundMainOpacityBrush}"
+                                        BorderBrush="{StaticResource ForegroundMainOpacityBrush}"
+                                        BorderThickness="{Binding ContentBorderThickness}">
+
                                     <Border.Effect>
                                         <DropShadowEffect ShadowDepth="0" Opacity=".2" />
                                     </Border.Effect>
-                                    
+
                                     <ContentPresenter Content="{TemplateBinding Content}" />
                                 </Border>
                             </DockPanel>
                         </Border>
+
+                        <!-- Start: Triggers -->
+                        <ControlTemplate.Triggers>
+                            <!-- Star: border animation-->
+                            <EventTrigger RoutedEvent="Border.MouseEnter">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+
+                                            <DoubleAnimation Storyboard.TargetProperty="BorderBrush.Opacity"
+                                                             Storyboard.TargetName="Content"
+                                                             To="1" Duration="0:0:1" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="Border.MouseLeave">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+
+                                            <DoubleAnimation Storyboard.TargetProperty="BorderBrush.Opacity"
+                                                             Storyboard.TargetName="Content"
+                                                             To="0.1" Duration="0:0:1" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                            <!-- Star: border animation-->
+                        </ControlTemplate.Triggers>
+                        <!-- End: Triggers -->
+
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
