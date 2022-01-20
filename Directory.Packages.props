@@ -1,7 +1,9 @@
 <Project>
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-windows;net48</TargetFrameworks>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>10.0</LangVersion>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	
     <ItemGroup>

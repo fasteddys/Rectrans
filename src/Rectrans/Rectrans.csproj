@@ -3,9 +3,6 @@
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFrameworks>net6.0-windows;net48</TargetFrameworks>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<LangVersion>10.0</LangVersion>
-		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 
@@ -28,9 +25,9 @@
 		<None Update="appsettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<Content Include="Images\**">
+		<Resource Include="Images\**">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
+		</Resource>
 	</ItemGroup>
 
 </Project>
