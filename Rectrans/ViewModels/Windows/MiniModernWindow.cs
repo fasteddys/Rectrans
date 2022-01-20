@@ -30,7 +30,7 @@ public abstract class MiniModernWindow : BindableBase
     /// <summary>
     /// The radius of the edges of the window
     /// </summary>
-    private int windowRadius = 10;
+    private int windowRadius = 6;
 
     /// <summary>
     /// The last known dock position
@@ -129,7 +129,6 @@ public abstract class MiniModernWindow : BindableBase
     
 
     #endregion
-    
 
     #region Constructor
 

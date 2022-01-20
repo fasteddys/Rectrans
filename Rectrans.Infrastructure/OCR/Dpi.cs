@@ -1,34 +1,47 @@
 using System.Drawing;
+using System.Windows;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 // ReSharper disable once CheckNamespace
 namespace Rectrans.Infrastructure;
 
-internal static class Dpi
+public static class Dpi
 {
-    public static Bitmap CreateBitmapWithActualScreen(double x, double y, double height, double width)
+    /// <summary>
+    /// Create bitmap based on scaling
+    /// </summary>
+    /// <param name="func">(scaling, (x, y, height, width))</param>
+    /// <returns></returns>
+    public static Bitmap CreateScalingBitmap(Func<double, (double, double, double, double)> func)
     {
-        var factor = GetScreenScalingFactor();
-        var ix = (int) (x * factor);
-        var iy = (int) (y * factor);
-        var iw = (int) (width * factor);
-        var ih = (int) (height * factor);
+        var scale = GetScreenScalingFactor();
+
+        var (x, y, height, width) = func.Invoke(scale);
+
+        var ix = (int)x;
+        var iy = (int)y;
+        var ih = (int)height;
+        var iw = (int)width;
 
         var bitmap = new Bitmap(iw, ih);
         using var graphics = Graphics.FromImage(bitmap);
-        graphics.CopyFromScreen(ix, iy, 0, 0, new Size(iw, ih));
+        graphics.CopyFromScreen(ix, iy, 0, 0, new System.Drawing.Size(iw, ih));
         return bitmap;
     }
 
-    public static int FontSize(double x, double y, int textCount) => (int) Math.Ceiling(x * y);
+    #region Private Methods
 
+    /// <summary>
+    /// Get screen scaling factor 
+    /// </summary>
+    /// <returns></returns>
     private static double GetScreenScalingFactor()
     {
         var desktop = GetDC(IntPtr.Zero);
-        var physicalScreenHeight = GetDeviceCaps(desktop, (int) DeviceCap.DESKTOPVERTRES);
+        var physicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
 
-        return physicalScreenHeight / System.Windows.SystemParameters.PrimaryScreenHeight;
+        return physicalScreenHeight / SystemParameters.PrimaryScreenHeight;
     }
 
     [DllImport("gdi32.dll")]
@@ -47,4 +60,6 @@ internal static class Dpi
         SCALINGFACTORX = 114,
         DESKTOPVERTRES = 117,
     }
+
+    #endregion
 }

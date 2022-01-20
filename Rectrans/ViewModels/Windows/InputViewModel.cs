@@ -170,14 +170,17 @@ public class InputViewModel : MiniModernWindow
     private async Task Translate()
     {
         var textBlock = inputWindow.TranslationAreaBlock;
+        
+        // This is the actual point in the screen whatever the scaling
         var point = textBlock.PointToScreen(new Point(0, 0));
 
         // Start another thread to perform this task
         await Task.Run(async () =>
         {
             // Translate text
-            var (original, translation, count) = await ImageTranslate.ExecuteAsync(point.X,
-                point.Y, textBlock.ActualHeight, textBlock.ActualWidth, SourceLanguage, DestinationLanguage);
+            var (original, translation, count) = await ScreenTranslator.TranslateAsync(
+                scaling => (point.X, point.Y, textBlock.ActualHeight * scaling, textBlock.ActualWidth * scaling),
+                SourceLanguage, DestinationLanguage, outputPng);
 
             // Publish the output event
             aggregator.GetEvent<OutputEvent>().Publish(new OutputEvent
@@ -188,6 +191,13 @@ public class InputViewModel : MiniModernWindow
             });
         });
     }
+
+    private const bool outputPng =
+#if DEBUG
+        true;
+#else
+        false;
+#endif
 
     #endregion
 }

@@ -5,23 +5,40 @@ using System.Text.RegularExpressions;
 // ReSharper disable once CheckNamespace
 namespace Rectrans.Infrastructure;
 
-internal static class Identify
+internal static class ScreenReader
 {
+    /// <summary>
+    /// Frame a picture from screen and recognize the text in it 
+    /// </summary>
+    /// <param name="func">(scaling, (x, y, height, width))</param>
+    /// <param name="tessdata">tessdata name</param>
+    /// <param name="outputPng"></param>
+    /// <returns></returns>
     // ReSharper disable once IdentifierTypo
-    public static string FromScreen(double x, double y, double height, double width, string tessdata)
+    public static string ReadFormScreen(Func<double,(double,double,double,double)> func, string tessdata, bool outputPng = false)
     {
         using var stream = new MemoryStream();
-        var bitmap = Dpi.CreateBitmapWithActualScreen(x, y, height, width);
+        var bitmap = Dpi.CreateScalingBitmap(func);
+
         bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
 
-        // bitmap.Save("debug.png", System.Drawing.Imaging.ImageFormat.Png);
+        if (outputPng)
+        {
+            bitmap.Save("debug.png", System.Drawing.Imaging.ImageFormat.Png);
+        }
 
-        return FromMemory(stream.ToArray(), tessdata);
+        return ReadFormFromMemory(stream.ToArray(), tessdata);
     }
 
+    /// <summary>
+    /// Frame a picture from file and recognize the text in it 
+    /// </summary>
+    /// <param name="filename">filename</param>
+    /// <param name="tessdata">tessdata name</param>
+    /// <returns></returns>
     // ReSharper disable once IdentifierTypo
     // ReSharper disable once UnusedMember.Local
-    private static string FromFile(string filename, string tessdata)
+    public static string ReadFormFromFile(string filename, string tessdata)
     {
         try
         {
@@ -37,8 +54,14 @@ internal static class Identify
         }
     }
 
+    /// <summary>
+    /// Frame a picture from memory and recognize the text in it 
+    /// </summary>
+    /// <param name="bytes"></param>
+    /// <param name="tessdata"></param>
+    /// <returns></returns>
     // ReSharper disable once IdentifierTypo
-    private static string FromMemory(byte[] bytes, string tessdata)
+    public static string ReadFormFromMemory(byte[] bytes, string tessdata)
     {
         try
         {

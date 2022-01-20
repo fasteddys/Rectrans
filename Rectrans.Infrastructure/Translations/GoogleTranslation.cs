@@ -5,12 +5,12 @@ using Newtonsoft.Json.Linq;
 // ReSharper disable once CheckNamespace
 namespace Rectrans.Infrastructure;
 
-internal static class Google
+internal static class GoogleTranslation
 {
-    public static string Process(string text, string sl, string tl)
-        => ProcessAsync(text, tl, sl).ConfigureAwait(false).GetAwaiter().GetResult();
+    public static string Translate(string text, string sl, string tl)
+        => TranslateAsync(text, tl, sl).ConfigureAwait(false).GetAwaiter().GetResult();
 
-    public static async Task<string> ProcessAsync(string text, string sl, string tl)
+    public static async Task<string> TranslateAsync(string text, string sl, string tl)
     {
         if (tl is null) throw new ArgumentNullException(tl, "传入的目标语言为 `NULL`.");
 
