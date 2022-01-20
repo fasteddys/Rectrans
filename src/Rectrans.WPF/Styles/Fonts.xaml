@@ -1,0 +1,38 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Start: Fonts-->
+    <!-- <FontFamily x:Key="LatoRegular">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato Regular</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoBlack">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato Black</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoBlackItalic">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato BlackItalic</FontFamily> -->
+    <FontFamily x:Key="LatoBold">pack://application:,,,/Fonts/Rectrans.WPF;component/#Lato Bold</FontFamily>
+    <!-- <FontFamily x:Key="LatoBoldItalic">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato BoldItalic</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoHairline">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato Hairline</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoHairlineItalic">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato HairlineItalic</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoHeavy">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato Heavy</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoHeavyItalic">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato HeavyItalic</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoItalic">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato Italic</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoLight">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato Light</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoLightItalic">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato LightItalic</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoMedium">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato Medium</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoMediumItalic">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato MediumItalic</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoSemibold">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato Semibold</FontFamily> -->
+    <!-- <FontFamily x:Key="LatoSemiboldItalic">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato SemiboldItalic</FontFamily> -->
+    <FontFamily x:Key="LatoThin">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato Thin</FontFamily>
+    <!-- <FontFamily x:Key="LatoThinItalic">pack://application:,,,/Rectrans.WPF;component/Fonts/#Lato ThinItalic</FontFamily> -->
+
+    <Style TargetType="{x:Type Control}" x:Key="BaseStyle">
+        <Setter Property="FontFamily" Value="{StaticResource LatoThin}" />
+    </Style>
+
+    <Style TargetType="{x:Type TextBlock}" x:Key="BaseTextBlockStyle">
+        <Setter Property="FontFamily" Value="{StaticResource LatoThin}" />
+    </Style>
+
+    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseStyle}" />
+    <Style TargetType="{x:Type Label}" BasedOn="{StaticResource BaseStyle}" />
+    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseStyle}" />
+    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource BaseTextBlockStyle}" />
+    <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource BaseStyle}" />
+    <!-- End: Fonts -->
+</ResourceDictionary>

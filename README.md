@@ -8,6 +8,13 @@
 > Tips：你可以用于：`Subverse` `最终幻想14 FINAL FANTASY XIV（国际服）` `上古卷轴 The Elder Scrolls Online` 等游戏。
 
 
+### README.md
+
+[简体中文](README.md)
+
+[English](README.en.md)
+
+
 ### 当前功能：
 
 1. 框选翻译区域进行翻译。
@@ -24,18 +31,11 @@
 2. 提供翻译区域使用译文覆盖原文功能。
 3. 字体设置功能。
 
-
 ### 预览图
 
-![](preview1.png)
+![](assets/preview1.png)
 
-![](preview2.png)
+![](assets/preview2.png)
 
-![](preview3.png)
+![](assets/preview3.png)
 
-
-### README.md
-
-[简体中文](README.md)
-
-[English](README.en.md)

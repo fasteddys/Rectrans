@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFrameworks>net6.0-windows;net48</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>10.0</LangVersion>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<BaseOutputPath>$(SolutionDir)\bin\</BaseOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Rectrans.Infrastructure\Rectrans.Infrastructure.csproj" />
+		<ProjectReference Include="..\Rectrans.WPF\Rectrans.WPF.csproj" />
+		<ProjectReference Include="..\ToastNotifications.Messages\ToastNotifications.Messages.csproj" />
+		<ProjectReference Include="..\ToastNotifications\ToastNotifications.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Prism.DryIoc" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<Content Include="Images\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+</Project>
